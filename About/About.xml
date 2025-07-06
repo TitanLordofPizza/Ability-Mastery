@@ -32,5 +32,5 @@
 	</loadAfter>
 	<packageId>Mastery.Ability</packageId>
 	<description>Ability Mastery uses Mastery Core to bring Progression to Rimworld's Abilities.</description>
-	<downloadUrl>https://github.com/TitanLordofPizza/Mastery-Core/releases/latest</downloadUrl>
+	<url>https://github.com/TitanLordofPizza/Ability-Mastery/releases/latest</url>
 </ModMetaData>
