@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+	<Ability_Mastery_PsycastExp_Settings>Psycast Exp Gain</Ability_Mastery_PsycastExp_Settings>
+	<Ability_Mastery_PsycastExp_Description_Settings>Does using Psycast Abilities give EXP?</Ability_Mastery_PsycastExp_Description_Settings>
+	
+	<Ability_Mastery_Settings>Enabled</Ability_Mastery_Settings>
+	<Ability_Mastery_Description_Settings>Do Abilities Have Proficiency?</Ability_Mastery_Description_Settings>
+	
+</LanguageData>

@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+	<name>Ability Mastery</name>
+	<author>Titan Lord of Pizza</author>
+	<supportedVersions>
+		<li>1.5</li>
+	</supportedVersions>
+	<modVersion>0.0.1</modVersion>
+	<modDependencies>
+		<li>
+			<packageId>brrainz.harmony</packageId>
+			<displayName>Harmony</displayName>
+			<steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+			<downloadUrl>https://github.com/pardeike/HarmonyRimWorld/releases/latest</downloadUrl>
+		</li>
+		<li>
+			<packageId>Mastery.Core</packageId>
+			<displayName>Mastery Core</displayName>
+			<steamWorkshopUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=3517957175</steamWorkshopUrl>
+			<downloadUrl>https://github.com/TitanLordofPizza/Mastery-Core/releases/latest</downloadUrl>
+		</li>
+	</modDependencies>
+	<loadAfter>
+		<li>Ludeon.RimWorld</li>
+		<li>Ludeon.RimWorld.Royalty</li>
+		<li>Ludeon.RimWorld.Biotech</li>
+		<li>Ludeon.RimWorld.Anomaly</li>
+		<li>brrainz.harmony</li>
+		<li>oskarpotocki.vanillafactionsexpanded.core</li>
+		<li>vanillaexpanded.vpsycastse</li>
+		<li>Mastery.Core</li>
+	</loadAfter>
+	<packageId>Mastery.Ability</packageId>
+	<description>Ability Mastery uses Mastery Core to bring Progression to Rimworld's Abilities.</description>
+	<downloadUrl>https://github.com/TitanLordofPizza/Mastery-Core/releases/latest</downloadUrl>
+</ModMetaData>

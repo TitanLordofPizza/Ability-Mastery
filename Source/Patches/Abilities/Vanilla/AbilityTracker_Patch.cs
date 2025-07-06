@@ -1,0 +1,126 @@
+﻿using System.Reflection;
+
+using RimWorld.Planet;
+using RimWorld;
+using Verse;
+
+using Mastery.Core.Utility;
+using Mastery.Core.Data.Level_Framework.Comps;
+using Mastery.Core.Data.Level_Framework.Data.Extensions;
+using Mastery.Core.Data.Level_Framework.Extensions;
+
+using Mastery.Ability.Data;
+using Mastery.Ability.Settings;
+
+namespace Mastery.Ability.Patches.Vanilla
+{
+    public static class Ability_Gain
+    {
+        public static void Postfix(Pawn_AbilityTracker __instance, AbilityDef def) //Adding Ability.
+        {
+            if (__instance.pawn.HasComp<Ability_Mastery_Comp>())
+            {
+                var comp = __instance.pawn.GetComp<Ability_Mastery_Comp>();
+
+                comp.GetOrAdd(def.defName); //Adding Ability.
+
+                if (Abilities_Settings.Instance.Active) //Is Mastery enabled?
+                {
+                    if (Mastery_Mod_Extension.IsIgnored(def) == false) //Is This Ignored?
+                    {
+                        var ability = __instance.GetAbility(def);
+
+                        ability.def = ClassCopy.CopyClass(ability.def);
+
+                        comp.AbilityStatsAllocate(ability.def);
+                    }
+                }
+            }
+        }
+    }
+
+    public static class Ability_ExposeData
+    {
+        public static void Postfix(RimWorld.Ability __instance)
+        {
+            if (__instance.def != null)
+            {
+                if (Mastery_Mod_Extension.IsIgnored(__instance.def) == false) //Is This Ignored?
+                {
+                    Ability_Mastery_Comp comp = null;
+                    if (Abilities_Settings.Instance.ActiveOnThing(__instance.pawn, out comp) == true) //Is Mastery enabled?
+                    {
+                        __instance.def = ClassCopy.CopyClass(__instance.def);
+
+                        comp.AbilityStatsAllocate(__instance.def);
+                    }
+                }
+            }
+        }
+    }
+
+    public static class Ability_ExpGain
+    {
+        public static void Postfix(Ability_Mastery_Comp __instance, ref bool __result, Def def, Level_Action_Extension action)
+        {
+            if (__result == true) //Has it Leveled Up?
+            {
+                if (def.GetType() == typeof(AbilityDef) || def.GetType().BaseType == typeof(AbilityDef))
+                {
+                    var abilityDef = (AbilityDef)def;
+
+                    typeof(AbilityDef).GetField("cachedTooltip", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(abilityDef, null); //Clears away the cachedTooltip so that the new stats can be shown.
+
+                    __instance.AbilityStatsAllocate(abilityDef);
+                }
+            }
+        }
+    }
+
+    public static class Ability_Description
+    {
+        public static void Postfix(AbilityDef __instance, ref string __result, Pawn pawn)
+        {
+            if (Mastery_Mod_Extension.IsIgnored(__instance) == false) //Is This Ignored?
+            {
+                Ability_Mastery_Comp comp = null;
+                if (Abilities_Settings.Instance.ActiveOnThing(pawn, out comp) == true) //Is Mastery enabled?
+                {
+                    var ability = comp.GetOrAdd(__instance.defName);
+
+                    var title = __instance.LabelCap.Colorize(ColoredText.TipSectionTitleColor);
+
+                    __result = __result.Replace(title, title + " - " + Abilities_Settings.Instance.GetConfig(__instance.defName).MasteryCalculated(ability.Level, ability.Exp));
+                }
+            }
+        }
+    }
+
+    public static class Ability_ActivateLocal
+    {
+        public static void Postfix(RimWorld.Ability __instance, LocalTargetInfo target, LocalTargetInfo dest)
+        {
+            if (Mastery_Mod_Extension.IsIgnored(__instance.def) == false) //Is This Ignored?
+            {
+                if (__instance.pawn.HasComp<Level_Comp_Manager>())
+                {
+                    __instance.pawn.GetComp<Level_Comp_Manager>().ActionEvent("Ability", __instance.def);
+                }
+            }
+        }
+    }
+
+    public static class Ability_ActivateGlobal
+    {
+        public static void Postfix(RimWorld.Ability __instance, GlobalTargetInfo target)
+        {
+            if (Mastery_Mod_Extension.IsIgnored(__instance.def) == false) //Is This Ignored?
+            {
+                if (__instance.pawn.HasComp<Level_Comp_Manager>())
+                {
+                    __instance.pawn.GetComp<Level_Comp_Manager>().ActionEvent("Ability", __instance.def);
+                }
+            }
+        }
+    }
+}

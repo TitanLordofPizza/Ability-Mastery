@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Patch>
+
+<Operation Class="PatchOperationAdd">
+  <xpath>Defs/ThingDef[thingClass="Pawn"]/comps</xpath>
+  <value>
+	<li>
+    <compClass>Mastery.Ability.Data.Ability_Mastery_Comp</compClass>
+    </li>
+  </value>
+</Operation>
+
+</Patch>
