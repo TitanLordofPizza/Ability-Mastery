@@ -6,7 +6,6 @@ using Verse;
 
 using Mastery.Core.Utility;
 using Mastery.Core.Data.Level_Framework.Comps;
-using Mastery.Core.Data.Level_Framework.Data.Extensions;
 using Mastery.Core.Data.Level_Framework.Extensions;
 
 using Mastery.Ability.Data;
@@ -26,7 +25,7 @@ namespace Mastery.Ability.Patches.Vanilla
 
                 if (Abilities_Settings.Instance.Active) //Is Mastery enabled?
                 {
-                    if (Mastery_Mod_Extension.IsIgnored(def) == false) //Is This Ignored?
+                    if (Abilities_Settings.Instance.ActiveConfig(def.defName) == false) //Is This Ignored?
                     {
                         var ability = __instance.GetAbility(def);
 
@@ -45,15 +44,12 @@ namespace Mastery.Ability.Patches.Vanilla
         {
             if (__instance.def != null)
             {
-                if (Mastery_Mod_Extension.IsIgnored(__instance.def) == false) //Is This Ignored?
+                Ability_Mastery_Comp comp = null;
+                if (Abilities_Settings.Instance.ActiveOnThing(__instance.pawn, __instance.def.defName, out comp) == true) //Is Mastery enabled?
                 {
-                    Ability_Mastery_Comp comp = null;
-                    if (Abilities_Settings.Instance.ActiveOnThing(__instance.pawn, out comp) == true) //Is Mastery enabled?
-                    {
-                        __instance.def = ClassCopy.CopyClass(__instance.def);
+                    __instance.def = ClassCopy.CopyClass(__instance.def);
 
-                        comp.AbilityStatsAllocate(__instance.def);
-                    }
+                    comp.AbilityStatsAllocate(__instance.def);
                 }
             }
         }
@@ -81,17 +77,14 @@ namespace Mastery.Ability.Patches.Vanilla
     {
         public static void Postfix(AbilityDef __instance, ref string __result, Pawn pawn)
         {
-            if (Mastery_Mod_Extension.IsIgnored(__instance) == false) //Is This Ignored?
+            Ability_Mastery_Comp comp = null;
+            if (Abilities_Settings.Instance.ActiveOnThing(pawn, __instance.defName, out comp) == true) //Is Mastery enabled?
             {
-                Ability_Mastery_Comp comp = null;
-                if (Abilities_Settings.Instance.ActiveOnThing(pawn, out comp) == true) //Is Mastery enabled?
-                {
-                    var ability = comp.GetOrAdd(__instance.defName);
+                var ability = comp.GetOrAdd(__instance.defName);
 
-                    var title = __instance.LabelCap.Colorize(ColoredText.TipSectionTitleColor);
+                var title = __instance.LabelCap.Colorize(ColoredText.TipSectionTitleColor);
 
-                    __result = __result.Replace(title, title + " - " + Abilities_Settings.Instance.GetConfig(__instance.defName).MasteryCalculated(ability.Level, ability.Exp));
-                }
+                __result = __result.Replace(title, title + " - " + Abilities_Settings.Instance.GetConfig(__instance.defName).MasteryCalculated(ability.Level, ability.Exp));
             }
         }
     }
@@ -100,7 +93,7 @@ namespace Mastery.Ability.Patches.Vanilla
     {
         public static void Postfix(RimWorld.Ability __instance, LocalTargetInfo target, LocalTargetInfo dest)
         {
-            if (Mastery_Mod_Extension.IsIgnored(__instance.def) == false) //Is This Ignored?
+            if (Abilities_Settings.Instance.ActiveConfig(__instance.def.defName) == false) //Is This Ignored?
             {
                 if (__instance.pawn.HasComp<Level_Comp_Manager>())
                 {
@@ -114,7 +107,7 @@ namespace Mastery.Ability.Patches.Vanilla
     {
         public static void Postfix(RimWorld.Ability __instance, GlobalTargetInfo target)
         {
-            if (Mastery_Mod_Extension.IsIgnored(__instance.def) == false) //Is This Ignored?
+            if (Abilities_Settings.Instance.ActiveConfig(__instance.def.defName) == false) //Is This Ignored?
             {
                 if (__instance.pawn.HasComp<Level_Comp_Manager>())
                 {

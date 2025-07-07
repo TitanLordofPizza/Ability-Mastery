@@ -196,12 +196,13 @@ namespace Mastery.Ability.Settings
         {
             base.AddConfig(def);
 
-            isExpanded.Add(def.defName, false);
+            isCollapsed.Add(def.defName, true);
         }
 
         #region UI
 
         private Vector2 scrollPos;
+        private string search;
 
         public void Window(Rect inRect)
         {
@@ -218,6 +219,8 @@ namespace Mastery.Ability.Settings
 
             options.CheckboxLabeled("Ability_Mastery_Settings".Translate(), ref Active, "Ability_Mastery_Description_Settings".Translate());
 
+            search = options.TextEntryLabeled("Ability_Mastery_Searchbar_Settings".Translate(), search);
+
             options.End();
 
             //ListView Start
@@ -225,33 +228,36 @@ namespace Mastery.Ability.Settings
             //ListHeight Start
             float Height = 0;
 
-            foreach (var expanded in isExpanded.Keys)
+            foreach (var isCollapsedKey in isCollapsed.Keys)
             {
-                Height += Text.CalcHeight(expanded, options.ColumnWidth);
-
-                if (isExpanded[expanded] == true)
+                if (isCollapsedKey.ToLower().Contains(search.ToLower()) == true)
                 {
-                    Height += GUIExpanded.smallUISpacing;
+                    Height += Text.CalcHeight(isCollapsedKey, options.ColumnWidth);
 
-                    Height += (UtilityCurve.UIHeight + GUIExpanded.smallUISpacing) * 9;
+                    if (isCollapsed[isCollapsedKey] == false)
+                    {
+                        Height += GUIExpanded.smallUISpacing;
 
-                    Height += Text.CalcHeight("Title", options.ColumnWidth);
-                    Height += Text.CalcHeight("Exp", options.ColumnWidth);
+                        Height += (UtilityCurve.UIHeight + GUIExpanded.smallUISpacing) * 9;
 
-                    Height += Text.CalcHeight("Range", options.ColumnWidth);
-                    Height += Text.CalcHeight("Radius", options.ColumnWidth);
+                        Height += Text.CalcHeight("Title", options.ColumnWidth);
+                        Height += Text.CalcHeight("Exp", options.ColumnWidth);
 
-                    Height += Text.CalcHeight("CastTime", options.ColumnWidth);
-                    Height += Text.CalcHeight("Cooldown", options.ColumnWidth);
-                    Height += Text.CalcHeight("Duration", options.ColumnWidth);
+                        Height += Text.CalcHeight("Range", options.ColumnWidth);
+                        Height += Text.CalcHeight("Radius", options.ColumnWidth);
 
-                    Height += Text.CalcHeight("Psyfocus", options.ColumnWidth);
-                    Height += Text.CalcHeight("Entropy", options.ColumnWidth);
-                }
+                        Height += Text.CalcHeight("CastTime", options.ColumnWidth);
+                        Height += Text.CalcHeight("Cooldown", options.ColumnWidth);
+                        Height += Text.CalcHeight("Duration", options.ColumnWidth);
 
-                if (expanded != baseExtensionName)
-                {
-                    Height += GUIExpanded.mediumUISpacing + Text.CalcHeight("Override", options.ColumnWidth) + GUIExpanded.smallUISpacing;
+                        Height += Text.CalcHeight("Psyfocus", options.ColumnWidth);
+                        Height += Text.CalcHeight("Entropy", options.ColumnWidth);
+                    }
+
+                    if (isCollapsedKey != baseExtensionName)
+                    {
+                        Height += GUIExpanded.mediumUISpacing + Text.CalcHeight("Ability_Mastery_Override_Settings".Translate(), options.ColumnWidth) + GUIExpanded.smallUISpacing;
+                    }
                 }
             }
 
@@ -267,11 +273,13 @@ namespace Mastery.Ability.Settings
 
             options.Begin(viewRect);
 
-            MasteryItem(viewRect, options, baseExtensionName);
+            if (baseExtensionName.ToLower().Contains(search.ToLower()) == true)
+                MasteryItem(viewRect, options, baseExtensionName);
 
             foreach (var key in Configs.Keys)
             {
-                MasteryItem(viewRect, options, key);
+                if (key.ToLower().Contains(search.ToLower()) == true && isCollapsed.ContainsKey(key))
+                    MasteryItem(viewRect, options, key);
             }
 
             options.End();
@@ -281,51 +289,54 @@ namespace Mastery.Ability.Settings
             //ListView End
         }
 
-        public Dictionary<string, bool> isExpanded = new Dictionary<string, bool>();
+        public Dictionary<string, bool> isCollapsed = new Dictionary<string, bool>();
 
         public void MasteryItem(Rect viewRect, Listing_Standard options, string key)
         {
             if (key != baseExtensionName)
                 options.GapLine(GUIExpanded.mediumUISpacing);
 
-            bool foldoutIsExpanded = isExpanded[key];
-            GUIExpanded.Foldout(options, key, ref foldoutIsExpanded);
-            isExpanded[key] = foldoutIsExpanded;
+            bool foldoutIsCollapsed = isCollapsed[key];
+            GUIExpanded.Foldout(options, key, ref foldoutIsCollapsed);
+            isCollapsed[key] = foldoutIsCollapsed;
 
             options.verticalSpacing = GUIExpanded.smallUISpacing;
 
             if (key != baseExtensionName)
             {
-                options.CheckboxLabeled("Override", ref Configs[key].Override);
+                bool previousOverride = Configs[key].Override;
 
-                if (Configs[key].Override == true)
+                options.CheckboxLabeled("Ability_Mastery_Override_Settings".Translate(), ref Configs[key].Override);
+
+                if (Configs[key].Override == true && previousOverride != true)
                 {
                     if (Configs[key].Value == null)
                     {
-                        Configs[key].Value = ClassCopy.CopyClass(GetConfig(key));
+                        Configs[key].Value = GetConfig(key).Duplicate();
                     }
                 }
             }
 
-
-            if (isExpanded[key] == true)
+            if (isCollapsed[key] == false)
             {
                 var masteryConfig = (key == baseExtensionName ? ExtensionBase : GetConfig(key));
 
                 var active = (key == baseExtensionName ? false : Configs[key].Override);
 
-                masteryConfig.TitleCurve.Editor(options, "Title", active: active);
-                masteryConfig.ExpCurve.Editor(options, "Exp", active: active);
+                options.CheckboxLabeled("Ability_Mastery_IsIgnored_Settings".Translate(), ref masteryConfig.isIgnored);
 
-                masteryConfig.rangeCurve.Editor(options, "Range", active: active);
-                masteryConfig.radiusCurve.Editor(options, "Radius", active: active);
+                masteryConfig.TitleCurve.Editor(options, "Ability_Mastery_TitleCurve_Settings".Translate(), active: active);
+                masteryConfig.ExpCurve.Editor(options, "Ability_Mastery_ExpCurve_Settings".Translate(), active: active);
 
-                masteryConfig.castTimeCurve.Editor(options, "CastTime", active: active);
-                masteryConfig.cooldownCurve.Editor(options, "Cooldown", active: active);
-                masteryConfig.durationCurve.Editor(options, "Duration", active: active);
+                masteryConfig.rangeCurve.Editor(options, "Ability_Mastery_RangeCurve_Settings".Translate(), active: active);
+                masteryConfig.radiusCurve.Editor(options, "Ability_Mastery_RadiusCurve_Settings".Translate(), active: active);
 
-                masteryConfig.psyfocusCurve.Editor(options, "Psyfocus", active: active);
-                masteryConfig.entropyCurve.Editor(options, "Entropy", active: active);
+                masteryConfig.castTimeCurve.Editor(options, "Ability_Mastery_CastTimeCurve_Settings".Translate(), active: active);
+                masteryConfig.cooldownCurve.Editor(options, "Ability_Mastery_CooldownCurve_Settings".Translate(), active: active);
+                masteryConfig.durationCurve.Editor(options, "Ability_Mastery_DurationCurve_Settings".Translate(), active: active);
+
+                masteryConfig.psyfocusCurve.Editor(options, "Ability_Mastery_PsyfocusCurve_Settings".Translate(), active: active);
+                masteryConfig.entropyCurve.Editor(options, "Ability_Mastery_EntropyCurve_Settings".Translate(), active: active);
             }
         }
 
@@ -337,10 +348,10 @@ namespace Mastery.Ability.Settings
 
             Instance = this;
 
-            if (isExpanded == null)
-                isExpanded = new Dictionary<string, bool>();
+            if (isCollapsed == null)
+                isCollapsed = new Dictionary<string, bool>();
 
-            isExpanded.Add(baseExtensionName, false);
+            isCollapsed.Add(baseExtensionName, true);
         }
 
         #endregion

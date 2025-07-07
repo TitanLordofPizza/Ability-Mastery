@@ -5,6 +5,24 @@
 	<Ability_Mastery_PsycastExp_Description_Settings>Does using Psycast Abilities give EXP?</Ability_Mastery_PsycastExp_Description_Settings>
 	
 	<Ability_Mastery_Settings>Enabled</Ability_Mastery_Settings>
-	<Ability_Mastery_Description_Settings>Do Abilities Have Proficiency?</Ability_Mastery_Description_Settings>
+	<Ability_Mastery_Description_Settings>Do Abilities Have Mastery?</Ability_Mastery_Description_Settings>
+	
+	<Ability_Mastery_Searchbar_Settings>Searchbar</Ability_Mastery_Searchbar_Settings>
+	
+	<Ability_Mastery_Override_Settings>Override</Ability_Mastery_Override_Settings>
+	<Ability_Mastery_IsIgnored_Settings>Is Ignored</Ability_Mastery_IsIgnored_Settings>
+	
+	<Ability_Mastery_TitleCurve_Settings>Title</Ability_Mastery_TitleCurve_Settings>
+	<Ability_Mastery_ExpCurve_Settings>Exp</Ability_Mastery_ExpCurve_Settings>
+	
+	<Ability_Mastery_RangeCurve_Settings>Range</Ability_Mastery_RangeCurve_Settings>
+	<Ability_Mastery_RadiusCurve_Settings>Radius</Ability_Mastery_RadiusCurve_Settings>
+	
+	<Ability_Mastery_CastTimeCurve_Settings>Cast Time</Ability_Mastery_CastTimeCurve_Settings>
+	<Ability_Mastery_CooldownCurve_Settings>Cooldown</Ability_Mastery_CooldownCurve_Settings>
+	<Ability_Mastery_DurationCurve_Settings>Duration</Ability_Mastery_DurationCurve_Settings>
+	
+	<Ability_Mastery_PsyfocusCurve_Settings>Psyfocus</Ability_Mastery_PsyfocusCurve_Settings>
+	<Ability_Mastery_EntropyCurve_Settings>Entropy</Ability_Mastery_EntropyCurve_Settings>
 	
 </LanguageData>

@@ -5,7 +5,7 @@ using Mastery.Core.Data.Level_Framework.Extensions;
 
 namespace Mastery.Ability.Data
 {
-    public class Ability_Mastery_Extension : Level_Effect_Extension
+    public class Ability_Mastery_Extension : Level_Effect_Extension, IDuplicable<Ability_Mastery_Extension>
     {
         public UtilityCurve rangeCurve; //This is how much Range is Increased Per Level.
         public UtilityCurve radiusCurve; //This is how much Radius is Increased Per Level.
@@ -72,6 +72,30 @@ namespace Mastery.Ability.Data
         {
             var evaluation = entropyCurve.Evaluate(Level);
             return Base - (entropyCurve.Percentage ? Base * evaluation : evaluation);
+        }
+
+        public void CopyTo(Ability_Mastery_Extension target)
+        {
+            base.CopyTo(target);
+
+            target.rangeCurve = rangeCurve.Duplicate();
+            target.radiusCurve = radiusCurve.Duplicate();
+
+            target.castTimeCurve = castTimeCurve.Duplicate();
+            target.cooldownCurve = cooldownCurve.Duplicate();
+            target.durationCurve = durationCurve.Duplicate();
+
+            target.psyfocusCurve = psyfocusCurve.Duplicate();
+            target.entropyCurve = entropyCurve.Duplicate();
+        }
+
+        public Ability_Mastery_Extension Duplicate()
+        {
+            var duplicate = new Ability_Mastery_Extension();
+
+            CopyTo(duplicate);
+
+            return duplicate;
         }
     }
 }

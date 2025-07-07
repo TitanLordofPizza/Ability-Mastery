@@ -2,7 +2,6 @@
 using Verse;
 
 using Mastery.Core.Data.Level_Framework.Comps;
-using Mastery.Core.Data.Level_Framework.Data.Extensions;
 
 using Mastery.Ability.Data;
 using Mastery.Ability.Settings;
@@ -42,17 +41,14 @@ namespace Mastery.Ability.Patches.Mods.VCE
         {
             var instance = __instance as VFECore.Abilities.Ability;
 
-            if (Mastery_Mod_Extension.IsIgnored(instance.def) == false) //Is This Ignored?
+            Ability_Mastery_Comp comp = null;
+            if (Abilities_Settings.Instance.ActiveOnThing(instance.pawn, instance.def.defName, out comp) == true) //Is Mastery enabled?
             {
-                Ability_Mastery_Comp comp = null;
-                if (Abilities_Settings.Instance.ActiveOnThing(instance.pawn, out comp) == true) //Is Mastery enabled?
-                {
-                    var ability = comp.GetOrAdd(instance.def.defName);
+                var ability = comp.GetOrAdd(instance.def.defName);
 
-                    var title = instance.def.LabelCap.Colorize(ColoredText.TipSectionTitleColor);
+                var title = instance.def.LabelCap.Colorize(ColoredText.TipSectionTitleColor);
 
-                    __result = __result.Replace(title, title + " - " + Abilities_Settings.Instance.GetConfig(instance.def.defName).MasteryCalculated(ability.Level, ability.Exp));
-                }
+                __result = __result.Replace(title, title + " - " + Abilities_Settings.Instance.GetConfig(instance.def.defName).MasteryCalculated(ability.Level, ability.Exp));
             }
         }
     }
@@ -63,14 +59,11 @@ namespace Mastery.Ability.Patches.Mods.VCE
         {
             var instance = __instance as VFECore.Abilities.Ability;
 
-            if (Mastery_Mod_Extension.IsIgnored(instance.def) == false) //Is This Ignored?
+            Ability_Mastery_Comp comp = null;
+            if (Abilities_Settings.Instance.ActiveOnThing(instance.pawn, instance.def.defName, out comp) == true) //Is Mastery enabled?
             {
-                Ability_Mastery_Comp comp = null;
-                if (Abilities_Settings.Instance.ActiveOnThing(instance.pawn, out comp) == true) //Is Mastery enabled?
-                {
-                    __result = Abilities_Settings.Instance.GetConfig(instance.def.defName).RangeCalculated
-                        (comp.GetOrAdd(instance.def.defName).Level, __result);
-                }
+                __result = Abilities_Settings.Instance.GetConfig(instance.def.defName).RangeCalculated
+                    (comp.GetOrAdd(instance.def.defName).Level, __result);
             }
         }
     }
@@ -81,14 +74,11 @@ namespace Mastery.Ability.Patches.Mods.VCE
         {
             var instance = __instance as VFECore.Abilities.Ability;
 
-            if (Mastery_Mod_Extension.IsIgnored(instance.def) == false) //Is This Ignored?
+            Ability_Mastery_Comp comp = null;
+            if (Abilities_Settings.Instance.ActiveOnThing(instance.pawn, instance.def.defName, out comp) == true) //Is Proficiency enabled?
             {
-                Ability_Mastery_Comp comp = null;
-                if (Abilities_Settings.Instance.ActiveOnThing(instance.pawn, out comp) == true) //Is Proficiency enabled?
-                {
-                    __result = Abilities_Settings.Instance.GetConfig(instance.def.defName).RadiusCalculated
-                        (comp.GetOrAdd(instance.def.defName).Level, __result);
-                }
+                __result = Abilities_Settings.Instance.GetConfig(instance.def.defName).RadiusCalculated
+                    (comp.GetOrAdd(instance.def.defName).Level, __result);
             }
         }
     }
@@ -99,14 +89,11 @@ namespace Mastery.Ability.Patches.Mods.VCE
         {
             var instance = __instance as VFECore.Abilities.Ability;
 
-            if (Mastery_Mod_Extension.IsIgnored(instance.def) == false) //Is This Ignored?
+            Ability_Mastery_Comp comp = null;
+            if (Abilities_Settings.Instance.ActiveOnThing(instance.pawn, instance.def.defName, out comp) == true) //Is Proficiency enabled?
             {
-                Ability_Mastery_Comp comp = null;
-                if (Abilities_Settings.Instance.ActiveOnThing(instance.pawn, out comp) == true) //Is Proficiency enabled?
-                {
-                    __result = (int)Abilities_Settings.Instance.GetConfig(instance.def.defName).CastTimeCalculated
-                        (comp.GetOrAdd(instance.def.defName).Level, __result);
-                }
+                __result = (int)Abilities_Settings.Instance.GetConfig(instance.def.defName).CastTimeCalculated
+                    (comp.GetOrAdd(instance.def.defName).Level, __result);
             }
         }
     }
@@ -117,14 +104,11 @@ namespace Mastery.Ability.Patches.Mods.VCE
         {
             var instance = __instance as VFECore.Abilities.Ability;
 
-            if (Mastery_Mod_Extension.IsIgnored(instance.def) == false) //Is This Ignored?
+            Ability_Mastery_Comp comp = null;
+            if (Abilities_Settings.Instance.ActiveOnThing(instance.pawn, instance.def.defName, out comp) == true) //Is Proficiency enabled?
             {
-                Ability_Mastery_Comp comp = null;
-                if (Abilities_Settings.Instance.ActiveOnThing(instance.pawn, out comp) == true) //Is Proficiency enabled?
-                {
-                    __result = (int)Abilities_Settings.Instance.GetConfig(instance.def.defName).CooldownCalculated
-                        (comp.GetOrAdd(instance.def.defName).Level, __result);
-                }
+                __result = (int)Abilities_Settings.Instance.GetConfig(instance.def.defName).CooldownCalculated
+                    (comp.GetOrAdd(instance.def.defName).Level, __result);
             }
         }
     }
@@ -135,14 +119,11 @@ namespace Mastery.Ability.Patches.Mods.VCE
         {
             var instance = __instance as VFECore.Abilities.Ability;
 
-            if (Mastery_Mod_Extension.IsIgnored(instance.def) == false) //Is This Ignored?
+            Ability_Mastery_Comp comp = null;
+            if (Abilities_Settings.Instance.ActiveOnThing(instance.pawn, instance.def.defName, out comp) == true) //Is Proficiency enabled?
             {
-                Ability_Mastery_Comp comp = null;
-                if (Abilities_Settings.Instance.ActiveOnThing(instance.pawn, out comp) == true) //Is Proficiency enabled?
-                {
-                    __result = (int)Abilities_Settings.Instance.GetConfig(instance.def.defName).DurationCalculated
-                        (comp.GetOrAdd(instance.def.defName).Level, __result);
-                }
+                __result = (int)Abilities_Settings.Instance.GetConfig(instance.def.defName).DurationCalculated
+                    (comp.GetOrAdd(instance.def.defName).Level, __result);
             }
         }
     }
@@ -153,7 +134,7 @@ namespace Mastery.Ability.Patches.Mods.VCE
         {
             var instance = __instance as VFECore.Abilities.Ability;
 
-            if (Mastery_Mod_Extension.IsIgnored(instance.def) == false) //Is This Ignored?
+            if (Abilities_Settings.Instance.ActiveConfig(instance.def.defName) == false) //Is This Ignored?
             {
                 if (instance.pawn.HasComp<Level_Comp_Manager>())
                 {
