@@ -134,7 +134,7 @@ namespace Mastery.Ability.Patches.Mods.VCE
         {
             var instance = __instance as VFECore.Abilities.Ability;
 
-            if (Abilities_Settings.Instance.ActiveConfig(instance.def.defName) == false) //Is This Ignored?
+            if (Abilities_Settings.Instance.ActiveConfig(instance.def.defName) == true) //Is This Not Ignored?
             {
                 if (instance.pawn.HasComp<Level_Comp_Manager>())
                 {

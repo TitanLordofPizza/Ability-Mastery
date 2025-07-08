@@ -25,7 +25,7 @@ namespace Mastery.Ability.Patches.Vanilla
 
                 if (Abilities_Settings.Instance.Active) //Is Mastery enabled?
                 {
-                    if (Abilities_Settings.Instance.ActiveConfig(def.defName) == false) //Is This Ignored?
+                    if (Abilities_Settings.Instance.ActiveConfig(def.defName) == true) //Is This Not Ignored?
                     {
                         var ability = __instance.GetAbility(def);
 
@@ -93,9 +93,7 @@ namespace Mastery.Ability.Patches.Vanilla
     {
         public static void Postfix(RimWorld.Ability __instance, LocalTargetInfo target, LocalTargetInfo dest)
         {
-            Log.Message("here");
-
-            if (Abilities_Settings.Instance.ActiveConfig(__instance.def.defName) == false) //Is This Ignored?
+            if (Abilities_Settings.Instance.ActiveConfig(__instance.def.defName) == true) //Is This Not Ignored?
             {
                 if (__instance.pawn.HasComp<Level_Comp_Manager>())
                 {
@@ -109,7 +107,7 @@ namespace Mastery.Ability.Patches.Vanilla
     {
         public static void Postfix(RimWorld.Ability __instance, GlobalTargetInfo target)
         {
-            if (Abilities_Settings.Instance.ActiveConfig(__instance.def.defName) == false) //Is This Ignored?
+            if (Abilities_Settings.Instance.ActiveConfig(__instance.def.defName) == true) //Is This Not Ignored?
             {
                 if (__instance.pawn.HasComp<Level_Comp_Manager>())
                 {

@@ -140,10 +140,10 @@ namespace Mastery.Ability.Patches
         {
             public static void Postfix(Level_Comp_Manager __instance, List<string> __result, string actionType, Def def, Dictionary<string, object> states = null)
             {
-                if (actionType == "Ability" && __result.Contains(Abilities_Settings.Instance.LevelKey) == false)
+                if (actionType == "Ability" && __result.Contains(Abilities_Settings.Instance.LevelKey) == false) //Does it already have a ActionExtension?
                 {
                     Ability_Mastery_Comp comp = null;
-                    if (Abilities_Settings.Instance.ActiveOnThing(__instance.parent, out comp) == true) //Is Proficiency enabled?
+                    if (Abilities_Settings.Instance.ActiveOnThing(__instance.parent, out comp) == true) //Is Mastery enabled?
                     {
                         comp.ActionEvent(def, Abilities_Settings.Instance.ActionBase, states);
                     }

@@ -278,9 +278,9 @@ namespace Mastery.Ability.Settings
                 MasteryItem(viewRect, options, baseExtensionName);
             }
 
-            foreach (var key in isCollapsed.Keys) //Create List.
+            foreach (var key in Configs.Keys) //Create List.
             {
-                if (cachedNames[key].IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0)
+                if (isCollapsed.ContainsKey(key) == true && cachedNames[key].IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     MasteryItem(viewRect, options, key);
                 }
