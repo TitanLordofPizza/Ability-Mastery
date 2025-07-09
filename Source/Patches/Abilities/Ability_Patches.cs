@@ -1,16 +1,18 @@
-﻿using HarmonyLib;
+﻿using System.Collections.Generic;
+
+using RimWorld.Planet;
+using RimWorld;
+using Verse;
+
+using HarmonyLib;
+
+using Mastery.Core.Data.Level_Framework.Comps;
+
 using Mastery.Ability.Data;
-using Mastery.Ability.Patches;
 using Mastery.Ability.Patches.Mods.VCE;
 using Mastery.Ability.Patches.Mods.VPE;
 using Mastery.Ability.Patches.Vanilla;
 using Mastery.Ability.Settings;
-using Mastery.Core.Data.Level_Framework.Comps;
-using Mastery_Core.Patches.Mods.VPE;
-using RimWorld;
-using RimWorld.Planet;
-using System.Collections.Generic;
-using Verse;
 
 namespace Mastery.Ability.Patches
 {
@@ -138,7 +140,7 @@ namespace Mastery.Ability.Patches
         {
             public static void Postfix(Level_Comp_Manager __instance, List<string> __result, string actionType, Def def, Dictionary<string, object> states = null)
             {
-                if (actionType == "Ability" && __result.Contains("AbilityProficiency") == false)
+                if (actionType == "Ability" && __result.Contains(Abilities_Settings.Instance.LevelKey) == false)
                 {
                     Ability_Mastery_Comp comp = null;
                     if (Abilities_Settings.Instance.ActiveOnThing(__instance.parent, out comp) == true) //Is Proficiency enabled?

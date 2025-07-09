@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using System;
 
 using UnityEngine;
+using RimWorld;
 using Verse;
 
 using Mastery.Core.Utility;
 using Mastery.Core.Utility.UI;
-
 using Mastery.Core.Data.Level_Framework.Extensions;
 using Mastery.Core.Settings.Level_Framework.Extensions;
 
@@ -197,12 +198,17 @@ namespace Mastery.Ability.Settings
             base.AddConfig(def);
 
             isCollapsed.Add(def.defName, true);
+            cachedNames.Add(def.defName, $"{def.LabelCap.RawText} ({def.defName})");
         }
 
         #region UI
 
-        private Vector2 scrollPos;
         private string search;
+
+        private Vector2 scrollPos;
+
+        private Dictionary<string, bool> isCollapsed = new Dictionary<string, bool>();
+        private Dictionary<string, string> cachedNames = new Dictionary<string, string>();
 
         public void Window(Rect inRect)
         {
@@ -223,73 +229,69 @@ namespace Mastery.Ability.Settings
 
             options.End();
 
-            //ListView Start
+            #region List View
 
-            //ListHeight Start
-            float Height = 0;
+            var outRect = new Rect(inRect.x, inRect.y + options.CurHeight, inRect.width, inRect.height - options.CurHeight); //outRect is where the entire ScrollView is.
+            var viewRect = new Rect(inRect.x, inRect.y, inRect.width - GUIExpanded.mediumUISpacing, 0); //inRect is where the contents of the ScrollView is.
 
-            foreach (var isCollapsedKey in isCollapsed.Keys)
+            foreach (var isCollapsedKey in isCollapsed.Keys) //Calculate List Height.
             {
-                if (isCollapsedKey.ToLower().Contains(search.ToLower()) == true)
+                if (cachedNames[isCollapsedKey].IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    Height += Text.CalcHeight(isCollapsedKey, options.ColumnWidth);
+                    viewRect.height += Text.CalcHeight(cachedNames[isCollapsedKey], options.ColumnWidth);
 
                     if (isCollapsed[isCollapsedKey] == false)
                     {
-                        Height += GUIExpanded.smallUISpacing;
+                        viewRect.height += GUIExpanded.smallUISpacing;
 
-                        Height += (UtilityCurve.UIHeight + GUIExpanded.smallUISpacing) * 9;
+                        viewRect.height += Text.CalcHeight("Ability_Mastery_IsIgnored_Settings".Translate(), options.ColumnWidth);
 
-                        Height += Text.CalcHeight("Title", options.ColumnWidth);
-                        Height += Text.CalcHeight("Exp", options.ColumnWidth);
+                        viewRect.height += (UtilityCurve.UIHeight + GUIExpanded.smallUISpacing) * 9;
 
-                        Height += Text.CalcHeight("Range", options.ColumnWidth);
-                        Height += Text.CalcHeight("Radius", options.ColumnWidth);
+                        viewRect.height += Text.CalcHeight("Ability_Mastery_TitleCurve_Settings".Translate(), options.ColumnWidth);
+                        viewRect.height += Text.CalcHeight("Ability_Mastery_ExpCurve_Settings".Translate(), options.ColumnWidth);
 
-                        Height += Text.CalcHeight("CastTime", options.ColumnWidth);
-                        Height += Text.CalcHeight("Cooldown", options.ColumnWidth);
-                        Height += Text.CalcHeight("Duration", options.ColumnWidth);
+                        viewRect.height += Text.CalcHeight("Ability_Mastery_RangeCurve_Settings".Translate(), options.ColumnWidth);
+                        viewRect.height += Text.CalcHeight("Ability_Mastery_RadiusCurve_Settings".Translate(), options.ColumnWidth);
 
-                        Height += Text.CalcHeight("Psyfocus", options.ColumnWidth);
-                        Height += Text.CalcHeight("Entropy", options.ColumnWidth);
+                        viewRect.height += Text.CalcHeight("Ability_Mastery_CastTimeCurve_Settings".Translate(), options.ColumnWidth);
+                        viewRect.height += Text.CalcHeight("Ability_Mastery_CooldownCurve_Settings".Translate(), options.ColumnWidth);
+                        viewRect.height += Text.CalcHeight("Ability_Mastery_DurationCurve_Settings".Translate(), options.ColumnWidth);
+
+                        viewRect.height += Text.CalcHeight("Ability_Mastery_PsyfocusCurve_Settings".Translate(), options.ColumnWidth);
+                        viewRect.height += Text.CalcHeight("Ability_Mastery_EntropyCurve_Settings".Translate(), options.ColumnWidth);
                     }
 
                     if (isCollapsedKey != baseExtensionName)
                     {
-                        Height += GUIExpanded.mediumUISpacing + Text.CalcHeight("Ability_Mastery_Override_Settings".Translate(), options.ColumnWidth) + GUIExpanded.smallUISpacing;
+                        viewRect.height += GUIExpanded.mediumUISpacing + Text.CalcHeight("Ability_Mastery_Override_Settings".Translate(), options.ColumnWidth) + GUIExpanded.smallUISpacing;
                     }
                 }
             }
 
-            //ListHeight End
-
-            //ListArea Start
-            var outRect = new Rect(inRect.x, inRect.y + options.CurHeight, inRect.width, inRect.height - options.CurHeight); //outRect is where the entire ScrollView is.
-            var viewRect = new Rect(inRect.x, inRect.y, inRect.width - GUIExpanded.mediumUISpacing, Height); //inRect is where the contents of the ScrollView is.
-
             Widgets.BeginScrollView(outRect, ref scrollPos, viewRect, true);
-
-            //ListArea End
 
             options.Begin(viewRect);
 
-            if (baseExtensionName.ToLower().Contains(search.ToLower()) == true)
-                MasteryItem(viewRect, options, baseExtensionName);
-
-            foreach (var key in Configs.Keys)
+            if (baseExtensionName.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                if (key.ToLower().Contains(search.ToLower()) == true && isCollapsed.ContainsKey(key))
+                MasteryItem(viewRect, options, baseExtensionName);
+            }
+
+            foreach (var key in isCollapsed.Keys) //Create List.
+            {
+                if (cachedNames[key].IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0)
+                {
                     MasteryItem(viewRect, options, key);
+                }
             }
 
             options.End();
 
             Widgets.EndScrollView();
 
-            //ListView End
+            #endregion
         }
-
-        public Dictionary<string, bool> isCollapsed = new Dictionary<string, bool>();
 
         public void MasteryItem(Rect viewRect, Listing_Standard options, string key)
         {
@@ -297,7 +299,7 @@ namespace Mastery.Ability.Settings
                 options.GapLine(GUIExpanded.mediumUISpacing);
 
             bool foldoutIsCollapsed = isCollapsed[key];
-            GUIExpanded.Foldout(options, key, ref foldoutIsCollapsed);
+            GUIExpanded.Foldout(options, cachedNames[key], ref foldoutIsCollapsed);
             isCollapsed[key] = foldoutIsCollapsed;
 
             options.verticalSpacing = GUIExpanded.smallUISpacing;
@@ -351,7 +353,11 @@ namespace Mastery.Ability.Settings
             if (isCollapsed == null)
                 isCollapsed = new Dictionary<string, bool>();
 
+            if (cachedNames == null)
+                cachedNames = new Dictionary<string, string>();
+
             isCollapsed.Add(baseExtensionName, true);
+            cachedNames.Add(baseExtensionName, baseExtensionName);
         }
 
         #endregion

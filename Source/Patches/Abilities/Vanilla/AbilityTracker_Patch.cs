@@ -93,6 +93,8 @@ namespace Mastery.Ability.Patches.Vanilla
     {
         public static void Postfix(RimWorld.Ability __instance, LocalTargetInfo target, LocalTargetInfo dest)
         {
+            Log.Message("here");
+
             if (Abilities_Settings.Instance.ActiveConfig(__instance.def.defName) == false) //Is This Ignored?
             {
                 if (__instance.pawn.HasComp<Level_Comp_Manager>())

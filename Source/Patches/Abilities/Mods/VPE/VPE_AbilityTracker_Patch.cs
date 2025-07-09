@@ -1,11 +1,9 @@
 ﻿using Verse;
 
-using Mastery.Core.Data.Level_Framework.Data.Extensions;
-
 using Mastery.Ability.Settings;
 using Mastery.Ability.Data;
 
-namespace Mastery_Core.Patches.Mods.VPE
+namespace Mastery.Ability.Patches.Mods.VPE
 {
     public static class VPE_Ability_Psyfocus
     {

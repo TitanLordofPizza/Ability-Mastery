@@ -17,6 +17,7 @@ namespace Mastery.Ability.Data
         public override bool GainExperience(Def def, Level_Action_Extension action, float multiplier = 1) //This is here beacuse I can't patch Proficiency_Comp GainExperience without it
                                                                                                           //After all patching Level_Comp would be way more ineffective.
         {
+            Log.Message("I am here");
             return base.GainExperience(def, action, multiplier);
         }
 
@@ -98,6 +99,7 @@ namespace Mastery.Ability.Data
                 }
             }
         }
+        
         #endregion
 
     }
