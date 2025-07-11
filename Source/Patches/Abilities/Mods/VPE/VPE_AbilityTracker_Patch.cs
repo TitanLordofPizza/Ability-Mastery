@@ -1,7 +1,9 @@
 ﻿using Verse;
 
-using Mastery.Ability.Settings;
+using Mastery.Core.Utility;
+
 using Mastery.Ability.Data;
+using Mastery.Ability.Settings;
 
 namespace Mastery.Ability.Patches.Mods.VPE
 {
@@ -9,13 +11,12 @@ namespace Mastery.Ability.Patches.Mods.VPE
     {
         public static void Postfix(object __instance, ref float __result, Pawn pawn)
         {
-            var instance = __instance as VanillaPsycastsExpanded.AbilityExtension_Psycast;
+            var def = ClassUtility.GetField<Def>(__instance, "abilityDef");
 
-            Ability_Mastery_Comp comp = null;
-            if (Abilities_Settings.Instance.ActiveOnThing(pawn, instance.abilityDef.defName, out comp) == true) //Is Mastery enabled?
+            if (Abilities_Settings.Instance.ActiveOnThing(pawn, def.defName, out Ability_Mastery_Comp comp) == true) //Is Mastery enabled?
             {
-                __result = Abilities_Settings.Instance.GetConfig(instance.abilityDef.defName).PsyfocusCalculated
-                    (comp.GetOrAdd(instance.abilityDef.defName).Level, __result);
+                __result = Abilities_Settings.Instance.GetConfig(def.defName).PsyfocusCalculated
+                    (comp.GetOrAdd(def.defName).Level, __result);
             }
         }
     }
@@ -24,13 +25,12 @@ namespace Mastery.Ability.Patches.Mods.VPE
     {
         public static void Postfix(object __instance, ref float __result, Pawn pawn)
         {
-            var instance = __instance as VanillaPsycastsExpanded.AbilityExtension_Psycast;
+            var def = ClassUtility.GetField<Def>(__instance, "abilityDef");
 
-            Ability_Mastery_Comp comp = null;
-            if (Abilities_Settings.Instance.ActiveOnThing(pawn, instance.abilityDef.defName, out comp) == true) //Is Mastery enabled?
+            if (Abilities_Settings.Instance.ActiveOnThing(pawn, def.defName, out Ability_Mastery_Comp comp) == true) //Is Mastery enabled?
             {
-                __result = Abilities_Settings.Instance.GetConfig(instance.abilityDef.defName).EntropyCalculated
-                    (comp.GetOrAdd(instance.abilityDef.defName).Level, __result);
+                __result = Abilities_Settings.Instance.GetConfig(def.defName).EntropyCalculated
+                    (comp.GetOrAdd(def.defName).Level, __result);
             }
         }
     }

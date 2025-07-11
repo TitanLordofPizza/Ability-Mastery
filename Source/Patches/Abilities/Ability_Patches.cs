@@ -9,7 +9,7 @@ using HarmonyLib;
 using Mastery.Core.Data.Level_Framework.Comps;
 
 using Mastery.Ability.Data;
-using Mastery.Ability.Patches.Mods.VCE;
+using Mastery.Ability.Patches.Mods.VFE;
 using Mastery.Ability.Patches.Mods.VPE;
 using Mastery.Ability.Patches.Vanilla;
 using Mastery.Ability.Settings;
@@ -46,6 +46,10 @@ namespace Mastery.Ability.Patches
                 harmony.Patch(typeof(Ability_Mastery_Comp).Method(nameof(Ability_Mastery_Comp.GainExperience)), postfix: new HarmonyMethod(typeof(Ability_ExpGain), nameof(Ability_ExpGain.Postfix)));
 
                 harmony.Patch(typeof(AbilityDef).Method(nameof(AbilityDef.GetTooltip)), postfix: new HarmonyMethod(typeof(Ability_Description), nameof(Ability_Description.Postfix)));
+
+                harmony.Patch(typeof(RimWorld.Ability).Method(nameof(RimWorld.Ability.Activate), new System.Type[] { typeof(LocalTargetInfo), typeof(LocalTargetInfo) }), postfix: new HarmonyMethod(typeof(Ability_ActivateLocal), nameof(Ability_ActivateLocal.Postfix)));
+
+                harmony.Patch(typeof(RimWorld.Ability).Method(nameof(RimWorld.Ability.Activate), new System.Type[] { typeof(GlobalTargetInfo) }), postfix: new HarmonyMethod(typeof(Ability_ActivateGlobal), nameof(Ability_ActivateGlobal.Postfix)));
             }
             catch (System.Exception ex)
             {
@@ -56,23 +60,31 @@ namespace Mastery.Ability.Patches
             {
                 if (LoadedModManager.RunningModsListForReading.Any(x => x.Name == "Vanilla Expanded Framework"))
                 {
-                    VCE_Defs_Patch.LoadDefs(); //Adds Ability Configs to Proficiency.
+                    VFE_Defs_Patch.LoadDefs(); //Adds Ability Configs to Proficiency.
 
+#if v1_5
                     var AbilityType = GenTypes.GetTypeInAnyAssembly("VFECore.Abilities.Ability");
 
-                    harmony.Patch(GenTypes.GetTypeInAnyAssembly("VFECore.Abilities.CompAbilities").GetMethod("GiveAbility"), postfix: new HarmonyMethod(typeof(VCE_Ability_Gain), nameof(VCE_Ability_Gain.Postfix))); //Adds Abilities to Proficiency Comp.
+                    harmony.Patch(GenTypes.GetTypeInAnyAssembly("VFECore.Abilities.CompAbilities").GetMethod("GiveAbility"), postfix: new HarmonyMethod(typeof(VFE_Ability_Gain), nameof(VFE_Ability_Gain.Postfix))); //Adds Abilities to Mastery Comp.
+#else
+                    var AbilityType = GenTypes.GetTypeInAnyAssembly("VEF.Abilities.Ability");
 
-                    harmony.Patch(AbilityType.GetMethod("GetDescriptionForPawn"), postfix: new HarmonyMethod(typeof(VCE_Ability_Description), nameof(VCE_Ability_Description.Postfix))); //Gives Proficiency Level and Exp of Ability.
+                    harmony.Patch(GenTypes.GetTypeInAnyAssembly("VEF.Abilities.CompAbilities").GetMethod("GiveAbility"), postfix: new HarmonyMethod(typeof(VFE_Ability_Gain), nameof(VFE_Ability_Gain.Postfix))); //Adds Abilities to Mastery Comp.
+#endif
 
-                    harmony.Patch(AbilityType.Method("GetRangeForPawn"), postfix: new HarmonyMethod(typeof(VCE_Ability_Range), nameof(VCE_Ability_Range.Postfix))); //Sends the Updated Range of a Ability using Proficiency.
+                    harmony.Patch(AbilityType.GetMethod("GetDescriptionForPawn"), postfix: new HarmonyMethod(typeof(VFE_Ability_Description), nameof(VFE_Ability_Description.Postfix))); //Gives Proficiency Level and Exp of Ability.
 
-                    harmony.Patch(AbilityType.Method("GetRadiusForPawn"), postfix: new HarmonyMethod(typeof(VCE_Ability_Radius), nameof(VCE_Ability_Radius.Postfix))); //Sends the Updated Radius of a Ability using Proficiency.
+                    harmony.Patch(AbilityType.Method("GetRangeForPawn"), postfix: new HarmonyMethod(typeof(VFE_Ability_Range), nameof(VFE_Ability_Range.Postfix))); //Sends the Updated Range of a Ability using Proficiency.
 
-                    harmony.Patch(AbilityType.Method("GetCastTimeForPawn"), postfix: new HarmonyMethod(typeof(VCE_Ability_CastTime), nameof(VCE_Ability_CastTime.Postfix))); //Sends the Updated CastTime of a Ability using Proficiency.
+                    harmony.Patch(AbilityType.Method("GetRadiusForPawn"), postfix: new HarmonyMethod(typeof(VFE_Ability_Radius), nameof(VFE_Ability_Radius.Postfix))); //Sends the Updated Radius of a Ability using Proficiency.
 
-                    harmony.Patch(AbilityType.Method("GetCooldownForPawn"), postfix: new HarmonyMethod(typeof(VCE_Ability_Cooldown), nameof(VCE_Ability_Cooldown.Postfix))); //Sends the Updated Cooldown of a Ability using Proficiency.
+                    harmony.Patch(AbilityType.Method("GetCastTimeForPawn"), postfix: new HarmonyMethod(typeof(VFE_Ability_CastTime), nameof(VFE_Ability_CastTime.Postfix))); //Sends the Updated CastTime of a Ability using Proficiency.
 
-                    harmony.Patch(AbilityType.Method("GetDurationForPawn"), postfix: new HarmonyMethod(typeof(VCE_Ability_Duration), nameof(VCE_Ability_Duration.Postfix))); //Sends the Updated Duration of a Ability using Proficiency.
+                    harmony.Patch(AbilityType.Method("GetCooldownForPawn"), postfix: new HarmonyMethod(typeof(VFE_Ability_Cooldown), nameof(VFE_Ability_Cooldown.Postfix))); //Sends the Updated Cooldown of a Ability using Proficiency.
+
+                    harmony.Patch(AbilityType.Method("GetDurationForPawn"), postfix: new HarmonyMethod(typeof(VFE_Ability_Duration), nameof(VFE_Ability_Duration.Postfix))); //Sends the Updated Duration of a Ability using Proficiency.
+
+                    harmony.Patch(AbilityType.Method("PostCast"), postfix: new HarmonyMethod(typeof(VFE_Ability_PostCast), nameof(VFE_Ability_PostCast.Postfix))); //Sends Level Action Extensions to Level Comp Manager each time the Ability is Used.
                 }
             }
             catch (System.Exception ex)
@@ -84,55 +96,24 @@ namespace Mastery.Ability.Patches
             {
                 if (LoadedModManager.RunningModsListForReading.Any(x => x.Name == "Vanilla Psycasts Expanded"))
                 {
+#if v1_5
+                    var AbilityType = GenTypes.GetTypeInAnyAssembly("VFECore.Abilities.Ability");
+#else
+                    var AbilityType = GenTypes.GetTypeInAnyAssembly("VEF.Abilities.Ability");
+#endif
+
                     var PsycastType = GenTypes.GetTypeInAnyAssembly("VanillaPsycastsExpanded.AbilityExtension_Psycast");
 
                     harmony.Patch(PsycastType.Method("GetPsyfocusUsedByPawn"), postfix: new HarmonyMethod(typeof(VPE_Ability_Psyfocus), nameof(VPE_Ability_Psyfocus.Postfix))); //Sends the Updated Psyfocus of a Ability using Proficiency.
 
                     harmony.Patch(PsycastType.Method("GetEntropyUsedByPawn"), postfix: new HarmonyMethod(typeof(VPE_Ability_Entropy), nameof(VPE_Ability_Entropy.Postfix))); //Sends the Updated Entropy of a Ability using Proficiency.
-                }
-            }
-            catch (System.Exception ex)
-            {
-                Log.Error("Ability Mastery Failed to Patch Vanilla Psycasts Expanded Abilities for Mastery. " + ex);
-            }
-
-            try
-            {
-                harmony.Patch(typeof(RimWorld.Ability).Method(nameof(RimWorld.Ability.Activate), new System.Type[] { typeof(LocalTargetInfo), typeof(LocalTargetInfo) }), postfix: new HarmonyMethod(typeof(Ability_ActivateLocal), nameof(Ability_ActivateLocal.Postfix)));
-
-                harmony.Patch(typeof(RimWorld.Ability).Method(nameof(RimWorld.Ability.Activate), new System.Type[] { typeof(GlobalTargetInfo) }), postfix: new HarmonyMethod(typeof(Ability_ActivateGlobal), nameof(Ability_ActivateGlobal.Postfix)));
-            }
-            catch (System.Exception ex)
-            {
-                Log.Error("Ability Mastery Failed to Patch Rimworld for Vanilla Ability Activation. " + ex);
-            }
-
-            try
-            {
-                if (LoadedModManager.RunningModsListForReading.Any(x => x.Name == "Vanilla Expanded Framework"))
-                {
-                    var AbilityType = GenTypes.GetTypeInAnyAssembly("VFECore.Abilities.Ability");
-
-                    harmony.Patch(AbilityType.Method("PostCast"), postfix: new HarmonyMethod(typeof(VCE_Ability_PostCast), nameof(VCE_Ability_PostCast.Postfix))); //Sends Level Action Extensions to Level Comp Manager each time the Ability is Used.
-                }
-            }
-            catch (System.Exception ex)
-            {
-                Log.Error("Ability Mastery Failed to Patch Vanilla Expanded Framework for Abilities. " + ex);
-            }
-
-            try
-            {
-                if (LoadedModManager.RunningModsListForReading.Any(x => x.Name == "Vanilla Psycasts Expanded"))
-                {
-                    var AbilityType = GenTypes.GetTypeInAnyAssembly("VFECore.Abilities.Ability");
 
                     harmony.Patch(AbilityType.Method("PostCast"), postfix: new HarmonyMethod(typeof(VPE_Ability_PostCast), nameof(VPE_Ability_PostCast.Postfix))); //Gives Psycast Exp each time the Ability is Used.
                 }
             }
             catch (System.Exception ex)
             {
-                Log.Error("Ability Mastery Failed to Patch Vanilla Psycasts Expanded for Abilities. " + ex);
+                Log.Error("Ability Mastery Failed to Patch Vanilla Psycasts Expanded Abilities for Mastery. " + ex);
             }
         }
 

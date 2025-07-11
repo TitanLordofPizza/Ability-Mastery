@@ -29,7 +29,7 @@ namespace Mastery.Ability.Patches.Vanilla
                     {
                         var ability = __instance.GetAbility(def);
 
-                        ability.def = ClassCopy.CopyClass(ability.def);
+                        ability.def = ClassUtility.CopyClass(ability.def);
 
                         comp.AbilityStatsAllocate(ability.def);
                     }
@@ -44,10 +44,9 @@ namespace Mastery.Ability.Patches.Vanilla
         {
             if (__instance.def != null)
             {
-                Ability_Mastery_Comp comp = null;
-                if (Abilities_Settings.Instance.ActiveOnThing(__instance.pawn, __instance.def.defName, out comp) == true) //Is Mastery enabled?
+                if (Abilities_Settings.Instance.ActiveOnThing(__instance.pawn, __instance.def.defName, out Ability_Mastery_Comp comp) == true) //Is Mastery enabled?
                 {
-                    __instance.def = ClassCopy.CopyClass(__instance.def);
+                    __instance.def = ClassUtility.CopyClass(__instance.def);
 
                     comp.AbilityStatsAllocate(__instance.def);
                 }
@@ -77,8 +76,7 @@ namespace Mastery.Ability.Patches.Vanilla
     {
         public static void Postfix(AbilityDef __instance, ref string __result, Pawn pawn)
         {
-            Ability_Mastery_Comp comp = null;
-            if (Abilities_Settings.Instance.ActiveOnThing(pawn, __instance.defName, out comp) == true) //Is Mastery enabled?
+            if (Abilities_Settings.Instance.ActiveOnThing(pawn, __instance.defName, out Ability_Mastery_Comp comp) == true) //Is Mastery enabled?
             {
                 var ability = comp.GetOrAdd(__instance.defName);
 

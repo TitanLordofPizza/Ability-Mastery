@@ -6,43 +6,58 @@ using Mastery.Core.Data.Level_Framework.Comps;
 using Mastery.Ability.Data;
 using Mastery.Ability.Settings;
 
-namespace Mastery.Ability.Patches.Mods.VCE
+namespace Mastery.Ability.Patches.Mods.VFE
 {
-    public static class VCE_Defs_Patch
+    public static class VFE_Defs_Patch
     {
         public static void LoadDefs()
         {
-            var vce_defs = DefDatabase<VFECore.Abilities.AbilityDef>.AllDefsListForReading; //Get all Abilities.
+#if v1_5
+            var defs = DefDatabase<VFECore.Abilities.AbilityDef>.AllDefsListForReading; //Get all Abilities.
 
-            foreach (var def in vce_defs)
+            foreach (var def in defs)
             {
                 Abilities_Settings.Instance.AddConfig(def); //Add Ability.
             }
+#else
+            var defs = DefDatabase<VEF.Abilities.AbilityDef>.AllDefsListForReading; //Get all Abilities.
+
+            foreach (var def in defs)
+            {
+                Abilities_Settings.Instance.AddConfig(def); //Add Ability.
+            }
+#endif
         }
     }
 
-    public static class VCE_Ability_Gain
+    public static class VFE_Ability_Gain
     {
         public static void Postfix(object __instance, object abilityDef) //Adding Ability.
         {
+#if v1_5
             var instance = __instance as VFECore.Abilities.CompAbilities;
+#else
+            var instance = __instance as VEF.Abilities.CompAbilities;
+#endif
 
             if (instance.Pawn.HasComp<Ability_Mastery_Comp>())
             {
-                var def = abilityDef as VFECore.Abilities.AbilityDef;
-                instance.Pawn.GetComp<Ability_Mastery_Comp>().GetOrAdd(def.defName); //Adding Ability.
+                instance.Pawn.GetComp<Ability_Mastery_Comp>().GetOrAdd(((Def)abilityDef).defName); //Adding Ability.
             }
         }
     }
 
-    public static class VCE_Ability_Description
+    public static class VFE_Ability_Description
     {
         public static void Postfix(object __instance, ref string __result)
         {
+#if v1_5
             var instance = __instance as VFECore.Abilities.Ability;
+#else
+            var instance = __instance as VEF.Abilities.Ability;
+#endif
 
-            Ability_Mastery_Comp comp = null;
-            if (Abilities_Settings.Instance.ActiveOnThing(instance.pawn, instance.def.defName, out comp) == true) //Is Mastery enabled?
+            if (Abilities_Settings.Instance.ActiveOnThing(instance.pawn, instance.def.defName, out Ability_Mastery_Comp comp) == true) //Is Mastery enabled?
             {
                 var ability = comp.GetOrAdd(instance.def.defName);
 
@@ -53,14 +68,17 @@ namespace Mastery.Ability.Patches.Mods.VCE
         }
     }
 
-    public static class VCE_Ability_Range
+    public static class VFE_Ability_Range
     {
         public static void Postfix(object __instance, ref float __result)
         {
+#if v1_5
             var instance = __instance as VFECore.Abilities.Ability;
+#else
+            var instance = __instance as VEF.Abilities.Ability;
+#endif
 
-            Ability_Mastery_Comp comp = null;
-            if (Abilities_Settings.Instance.ActiveOnThing(instance.pawn, instance.def.defName, out comp) == true) //Is Mastery enabled?
+            if (Abilities_Settings.Instance.ActiveOnThing(instance.pawn, instance.def.defName, out Ability_Mastery_Comp comp) == true) //Is Mastery enabled?
             {
                 __result = Abilities_Settings.Instance.GetConfig(instance.def.defName).RangeCalculated
                     (comp.GetOrAdd(instance.def.defName).Level, __result);
@@ -68,14 +86,17 @@ namespace Mastery.Ability.Patches.Mods.VCE
         }
     }
 
-    public static class VCE_Ability_Radius
+    public static class VFE_Ability_Radius
     {
         public static void Postfix(object __instance, ref float __result)
         {
+#if v1_5
             var instance = __instance as VFECore.Abilities.Ability;
+#else
+            var instance = __instance as VEF.Abilities.Ability;
+#endif
 
-            Ability_Mastery_Comp comp = null;
-            if (Abilities_Settings.Instance.ActiveOnThing(instance.pawn, instance.def.defName, out comp) == true) //Is Proficiency enabled?
+            if (Abilities_Settings.Instance.ActiveOnThing(instance.pawn, instance.def.defName, out Ability_Mastery_Comp comp) == true) //Is Proficiency enabled?
             {
                 __result = Abilities_Settings.Instance.GetConfig(instance.def.defName).RadiusCalculated
                     (comp.GetOrAdd(instance.def.defName).Level, __result);
@@ -83,14 +104,17 @@ namespace Mastery.Ability.Patches.Mods.VCE
         }
     }
 
-    public static class VCE_Ability_CastTime
+    public static class VFE_Ability_CastTime
     {
         public static void Postfix(object __instance, ref int __result)
         {
+#if v1_5
             var instance = __instance as VFECore.Abilities.Ability;
+#else
+            var instance = __instance as VEF.Abilities.Ability;
+#endif
 
-            Ability_Mastery_Comp comp = null;
-            if (Abilities_Settings.Instance.ActiveOnThing(instance.pawn, instance.def.defName, out comp) == true) //Is Proficiency enabled?
+            if (Abilities_Settings.Instance.ActiveOnThing(instance.pawn, instance.def.defName, out Ability_Mastery_Comp comp) == true) //Is Proficiency enabled?
             {
                 __result = (int)Abilities_Settings.Instance.GetConfig(instance.def.defName).CastTimeCalculated
                     (comp.GetOrAdd(instance.def.defName).Level, __result);
@@ -98,14 +122,17 @@ namespace Mastery.Ability.Patches.Mods.VCE
         }
     }
 
-    public static class VCE_Ability_Cooldown
+    public static class VFE_Ability_Cooldown
     {
         public static void Postfix(object __instance, ref int __result)
         {
+#if v1_5
             var instance = __instance as VFECore.Abilities.Ability;
+#else
+            var instance = __instance as VEF.Abilities.Ability;
+#endif
 
-            Ability_Mastery_Comp comp = null;
-            if (Abilities_Settings.Instance.ActiveOnThing(instance.pawn, instance.def.defName, out comp) == true) //Is Proficiency enabled?
+            if (Abilities_Settings.Instance.ActiveOnThing(instance.pawn, instance.def.defName, out Ability_Mastery_Comp comp) == true) //Is Proficiency enabled?
             {
                 __result = (int)Abilities_Settings.Instance.GetConfig(instance.def.defName).CooldownCalculated
                     (comp.GetOrAdd(instance.def.defName).Level, __result);
@@ -113,14 +140,17 @@ namespace Mastery.Ability.Patches.Mods.VCE
         }
     }
 
-    public static class VCE_Ability_Duration
+    public static class VFE_Ability_Duration
     {
         public static void Postfix(object __instance, ref int __result)
         {
+#if v1_5
             var instance = __instance as VFECore.Abilities.Ability;
+#else
+            var instance = __instance as VEF.Abilities.Ability;
+#endif
 
-            Ability_Mastery_Comp comp = null;
-            if (Abilities_Settings.Instance.ActiveOnThing(instance.pawn, instance.def.defName, out comp) == true) //Is Proficiency enabled?
+            if (Abilities_Settings.Instance.ActiveOnThing(instance.pawn, instance.def.defName, out Ability_Mastery_Comp comp) == true) //Is Proficiency enabled?
             {
                 __result = (int)Abilities_Settings.Instance.GetConfig(instance.def.defName).DurationCalculated
                     (comp.GetOrAdd(instance.def.defName).Level, __result);
@@ -128,11 +158,15 @@ namespace Mastery.Ability.Patches.Mods.VCE
         }
     }
 
-    public static class VCE_Ability_PostCast
+    public static class VFE_Ability_PostCast
     {
         public static void Postfix(object __instance, params GlobalTargetInfo[] targets)
         {
+#if v1_5
             var instance = __instance as VFECore.Abilities.Ability;
+#else
+            var instance = __instance as VEF.Abilities.Ability;
+#endif
 
             if (Abilities_Settings.Instance.ActiveConfig(instance.def.defName) == true) //Is This Not Ignored?
             {

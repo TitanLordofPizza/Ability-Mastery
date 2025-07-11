@@ -10,7 +10,11 @@ namespace Mastery.Ability.Patches.Mods.VPE
         {
             if (Abilities_Settings.PsycastExp == true) //Is Psycast Exp enabled?
             {
-                var instance = __instance as VFECore.Abilities.Ability;
+#if v1_5
+            var instance = __instance as VFECore.Abilities.Ability;
+#else
+                var instance = __instance as VEF.Abilities.Ability;
+#endif
 
                 var action = Abilities_Settings.GetPsycastExpGain(instance.def);
 

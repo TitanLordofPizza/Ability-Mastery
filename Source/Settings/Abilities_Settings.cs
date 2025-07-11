@@ -220,7 +220,7 @@ namespace Mastery.Ability.Settings
             {
                 options.Label("Vanilla Expanded Psycasts");
 
-                options.CheckboxLabeled("Ability_Mastery_PsycastExp_Settings".Translate(), ref PsycastExp, "Ability_Mastery_Description_Settings".Translate());
+                options.CheckboxLabeled("Ability_Mastery_PsycastExp_Settings".Translate(), ref PsycastExp, "Ability_Mastery_PsycastExp_Description_Settings".Translate());
             }
 
             options.CheckboxLabeled("Ability_Mastery_Settings".Translate(), ref Active, "Ability_Mastery_Description_Settings".Translate());
