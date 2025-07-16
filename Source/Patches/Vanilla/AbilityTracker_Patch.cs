@@ -31,7 +31,7 @@ namespace Mastery.Ability.Patches.Vanilla
 
                         ability.def = ClassUtility.CopyClass(ability.def);
 
-                        comp.AbilityStatsAllocate(ability.def);
+                        AbilityCacheManager.AllocateStats(comp, ability.def);
                     }
                 }
             }
@@ -48,7 +48,7 @@ namespace Mastery.Ability.Patches.Vanilla
                 {
                     __instance.def = ClassUtility.CopyClass(__instance.def);
 
-                    comp.AbilityStatsAllocate(__instance.def);
+                    AbilityCacheManager.AllocateStats(comp, __instance.def);
                 }
             }
         }
@@ -66,7 +66,7 @@ namespace Mastery.Ability.Patches.Vanilla
 
                     typeof(AbilityDef).GetField("cachedTooltip", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(abilityDef, null); //Clears away the cachedTooltip so that the new stats can be shown.
 
-                    __instance.AbilityStatsAllocate(abilityDef);
+                    AbilityCacheManager.AllocateStats(__instance, abilityDef);
                 }
             }
         }
@@ -82,7 +82,7 @@ namespace Mastery.Ability.Patches.Vanilla
 
                 var title = __instance.LabelCap.Colorize(ColoredText.TipSectionTitleColor);
 
-                __result = __result.Replace(title, title + " - " + Abilities_Settings.Instance.GetConfig(__instance.defName).MasteryCalculated(ability.Level, ability.Exp));
+                __result = __result.Replace(title, title + " - " + Abilities_Settings.Instance.GetConfig(__instance.defName).MasteryCalculated(ability.level, ability.exp));
             }
         }
     }

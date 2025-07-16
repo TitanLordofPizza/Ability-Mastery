@@ -15,8 +15,7 @@ namespace Mastery.Ability.Patches.Mods.VPE
 
             if (Abilities_Settings.Instance.ActiveOnThing(pawn, def.defName, out Ability_Mastery_Comp comp) == true) //Is Mastery enabled?
             {
-                __result = Abilities_Settings.Instance.GetConfig(def.defName).PsyfocusCalculated
-                    (comp.GetOrAdd(def.defName).Level, __result);
+                __result = Abilities_Settings.Instance.GetConfig(def.defName).CalculateField("psyfocus", comp.GetOrAdd(def.defName).level, __result);
             }
         }
     }
@@ -29,8 +28,7 @@ namespace Mastery.Ability.Patches.Mods.VPE
 
             if (Abilities_Settings.Instance.ActiveOnThing(pawn, def.defName, out Ability_Mastery_Comp comp) == true) //Is Mastery enabled?
             {
-                __result = Abilities_Settings.Instance.GetConfig(def.defName).EntropyCalculated
-                    (comp.GetOrAdd(def.defName).Level, __result);
+                __result = Abilities_Settings.Instance.GetConfig(def.defName).CalculateField("entropy", comp.GetOrAdd(def.defName).level, __result);
             }
         }
     }

@@ -63,7 +63,7 @@ namespace Mastery.Ability.Patches.Mods.VFE
 
                 var title = instance.def.LabelCap.Colorize(ColoredText.TipSectionTitleColor);
 
-                __result = __result.Replace(title, title + " - " + Abilities_Settings.Instance.GetConfig(instance.def.defName).MasteryCalculated(ability.Level, ability.Exp));
+                __result = __result.Replace(title, title + " - " + Abilities_Settings.Instance.GetConfig(instance.def.defName).MasteryCalculated(ability.level, ability.exp));
             }
         }
     }
@@ -80,8 +80,7 @@ namespace Mastery.Ability.Patches.Mods.VFE
 
             if (Abilities_Settings.Instance.ActiveOnThing(instance.pawn, instance.def.defName, out Ability_Mastery_Comp comp) == true) //Is Mastery enabled?
             {
-                __result = Abilities_Settings.Instance.GetConfig(instance.def.defName).RangeCalculated
-                    (comp.GetOrAdd(instance.def.defName).Level, __result);
+                __result = Abilities_Settings.Instance.GetConfig(instance.def.defName).CalculateField("range", comp.GetOrAdd(instance.def.defName).level, __result);
             }
         }
     }
@@ -98,8 +97,7 @@ namespace Mastery.Ability.Patches.Mods.VFE
 
             if (Abilities_Settings.Instance.ActiveOnThing(instance.pawn, instance.def.defName, out Ability_Mastery_Comp comp) == true) //Is Proficiency enabled?
             {
-                __result = Abilities_Settings.Instance.GetConfig(instance.def.defName).RadiusCalculated
-                    (comp.GetOrAdd(instance.def.defName).Level, __result);
+                __result = Abilities_Settings.Instance.GetConfig(instance.def.defName).CalculateField("radius", comp.GetOrAdd(instance.def.defName).level, __result);
             }
         }
     }
@@ -116,8 +114,7 @@ namespace Mastery.Ability.Patches.Mods.VFE
 
             if (Abilities_Settings.Instance.ActiveOnThing(instance.pawn, instance.def.defName, out Ability_Mastery_Comp comp) == true) //Is Proficiency enabled?
             {
-                __result = (int)Abilities_Settings.Instance.GetConfig(instance.def.defName).CastTimeCalculated
-                    (comp.GetOrAdd(instance.def.defName).Level, __result);
+                __result = (int)Abilities_Settings.Instance.GetConfig(instance.def.defName).CalculateField("castTime", comp.GetOrAdd(instance.def.defName).level, __result);
             }
         }
     }
@@ -134,8 +131,7 @@ namespace Mastery.Ability.Patches.Mods.VFE
 
             if (Abilities_Settings.Instance.ActiveOnThing(instance.pawn, instance.def.defName, out Ability_Mastery_Comp comp) == true) //Is Proficiency enabled?
             {
-                __result = (int)Abilities_Settings.Instance.GetConfig(instance.def.defName).CooldownCalculated
-                    (comp.GetOrAdd(instance.def.defName).Level, __result);
+                __result = (int)Abilities_Settings.Instance.GetConfig(instance.def.defName).CalculateField("cooldown", comp.GetOrAdd(instance.def.defName).level, __result);
             }
         }
     }
@@ -152,8 +148,7 @@ namespace Mastery.Ability.Patches.Mods.VFE
 
             if (Abilities_Settings.Instance.ActiveOnThing(instance.pawn, instance.def.defName, out Ability_Mastery_Comp comp) == true) //Is Proficiency enabled?
             {
-                __result = (int)Abilities_Settings.Instance.GetConfig(instance.def.defName).DurationCalculated
-                    (comp.GetOrAdd(instance.def.defName).Level, __result);
+                __result = (int)Abilities_Settings.Instance.GetConfig(instance.def.defName).CalculateField("duration", comp.GetOrAdd(instance.def.defName).level, __result);
             }
         }
     }

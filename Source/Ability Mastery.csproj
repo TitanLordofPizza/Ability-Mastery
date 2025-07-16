@@ -104,16 +104,17 @@
     <Compile Include="Data\Ability_Mastery_Comp.cs" />
     <Compile Include="Data\Ability_Mastery_Extension.cs" />
     <Compile Include="Mod.cs" />
-    <Compile Include="Patches\Abilities\Ability_Patches.cs" />
-    <Compile Include="Patches\Abilities\Mods\VFE\VEF_AbilityTracker_Patch.cs" />
-    <Compile Include="Patches\Abilities\Mods\VPE\Psycast_AbilityTracker_Patch.cs" />
-    <Compile Include="Patches\Abilities\Mods\VPE\VPE_AbilityTracker_Patch.cs" />
-    <Compile Include="Patches\Abilities\Vanilla\AbilityStatsManager.cs" />
-    <Compile Include="Patches\Abilities\Vanilla\PawnGenerator_Patch.cs" />
-    <Compile Include="Patches\Abilities\Vanilla\AbilityTracker_Patch.cs" />
+    <Compile Include="Patches\Ability_Patches.cs" />
+    <Compile Include="Patches\Mods\VFE\VFE_AbilityTracker_Patch.cs" />
+    <Compile Include="Patches\Mods\VPE\Psycast_AbilityTracker_Patch.cs" />
+    <Compile Include="Patches\Mods\VPE\VPE_AbilityTracker_Patch.cs" />
+    <Compile Include="Patches\Vanilla\AbilityCacheManager.cs" />
+    <Compile Include="Patches\Vanilla\PawnGenerator_Patch.cs" />
+    <Compile Include="Patches\Vanilla\AbilityTracker_Patch.cs" />
     <Compile Include="Settings\Abilities_Settings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings\Mod_Settings.cs" />
+    <Compile Include="UI\Ability_Tab.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

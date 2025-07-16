@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
 
+	<Ability_Mastery_Tab>Abilities</Ability_Mastery_Tab>
+
 	<Ability_Mastery_PsycastExp_Settings>Psycast Exp Gain</Ability_Mastery_PsycastExp_Settings>
 	<Ability_Mastery_PsycastExp_Description_Settings>Does using Psycast Abilities give EXP?</Ability_Mastery_PsycastExp_Description_Settings>
 	
 	<Ability_Mastery_Settings>Enabled</Ability_Mastery_Settings>
 	<Ability_Mastery_Description_Settings>Do Abilities Have Mastery?</Ability_Mastery_Description_Settings>
+	
+	<Ability_Mastery_Tab_Settings>Tab Enabled</Ability_Mastery_Tab_Settings>
+	<Ability_Mastery_Tab_Description_Settings>Do Abilities Have A Tab For Mastery?</Ability_Mastery_Tab_Description_Settings>
 	
 	<Ability_Mastery_Searchbar_Settings>Searchbar</Ability_Mastery_Searchbar_Settings>
 	
@@ -16,13 +21,20 @@
 	<Ability_Mastery_ExpCurve_Settings>Exp</Ability_Mastery_ExpCurve_Settings>
 	
 	<Ability_Mastery_RangeCurve_Settings>Range</Ability_Mastery_RangeCurve_Settings>
+	<Ability_Mastery_RangeType_Settings>Range Type</Ability_Mastery_RangeType_Settings>
 	<Ability_Mastery_RadiusCurve_Settings>Radius</Ability_Mastery_RadiusCurve_Settings>
+	<Ability_Mastery_RadiusType_Settings>Radius Type</Ability_Mastery_RadiusType_Settings>
 	
 	<Ability_Mastery_CastTimeCurve_Settings>Cast Time</Ability_Mastery_CastTimeCurve_Settings>
+	<Ability_Mastery_CastTimeType_Settings>Cast Time Type</Ability_Mastery_CastTimeType_Settings>
 	<Ability_Mastery_CooldownCurve_Settings>Cooldown</Ability_Mastery_CooldownCurve_Settings>
+	<Ability_Mastery_CooldownType_Settings>Cooldown Type</Ability_Mastery_CooldownType_Settings>
 	<Ability_Mastery_DurationCurve_Settings>Duration</Ability_Mastery_DurationCurve_Settings>
+	<Ability_Mastery_DurationType_Settings>Duration Type</Ability_Mastery_DurationType_Settings>
 	
 	<Ability_Mastery_PsyfocusCurve_Settings>Psyfocus</Ability_Mastery_PsyfocusCurve_Settings>
+	<Ability_Mastery_PsyfocusType_Settings>Psyfocus Type</Ability_Mastery_PsyfocusType_Settings>
 	<Ability_Mastery_EntropyCurve_Settings>Entropy</Ability_Mastery_EntropyCurve_Settings>
+	<Ability_Mastery_EntropyCurve_Settings>Entropy Type</Ability_Mastery_EntropyCurve_Settings>
 	
 </LanguageData>

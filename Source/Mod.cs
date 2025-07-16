@@ -24,7 +24,7 @@ namespace Mastery.Ability
                 Log.Error("Ability Mastery Failed to Patch Abilities. " + ex);
             }
 
-            Mod_Mastery_Ability.harmony.PatchAll();
+            Mod_Ability_Mastery.harmony.PatchAll();
 
             Log.Message("Ability Mastery Loaded.");
 
@@ -32,13 +32,13 @@ namespace Mastery.Ability
         }
     }
 
-    public class Mod_Mastery_Ability : Mod
+    public class Mod_Ability_Mastery : Mod
     {
         public static Harmony harmony;
 
         public static Mod_Settings settings;
 
-        public Mod_Mastery_Ability(ModContentPack content) : base(content)
+        public Mod_Ability_Mastery(ModContentPack content) : base(content)
         {
             settings = GetSettings<Mod_Settings>();
 

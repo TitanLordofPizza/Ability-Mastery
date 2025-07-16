@@ -22,7 +22,8 @@ namespace Mastery.Ability.Settings
         public static Level_Action_Extension PsycastExpGainBase = new Level_Action_Extension() //How much Exp does VPE Abilities Give by default if there is no Extension?
         {
             LevelKey = "PsycastExp",
-            ExpGainCurve = new UtilityCurve()
+
+            expGainCurve = new UtilityCurve()
             {
                 Curve = new SimpleCurve(new List<CurvePoint>()
                 {
@@ -31,7 +32,8 @@ namespace Mastery.Ability.Settings
                 }),
 
                 Percentage = true
-            }
+            },
+            expGainType = OperationType.Additive
         };
 
         public Abilities_Settings()
@@ -67,8 +69,9 @@ namespace Mastery.Ability.Settings
                         new CurvePoint(20, 0.5f)
                     }),
 
-                    Percentage = false
+                    Percentage = true
                 },
+                rangeType = OperationType.Additive,
                 radiusCurve = new UtilityCurve()
                 {
                     Curve = new SimpleCurve(new List<CurvePoint>()
@@ -78,8 +81,9 @@ namespace Mastery.Ability.Settings
                         new CurvePoint(20, 0.5f)
                     }),
 
-                    Percentage = false
+                    Percentage = true
                 },
+                radiusType = OperationType.Additive,
 
                 castTimeCurve = new UtilityCurve()
                 {
@@ -92,6 +96,7 @@ namespace Mastery.Ability.Settings
 
                     Percentage = true
                 },
+                castTimeType = OperationType.Subtractive,
                 cooldownCurve = new UtilityCurve()
                 {
                     Curve = new SimpleCurve(new List<CurvePoint>()
@@ -103,6 +108,7 @@ namespace Mastery.Ability.Settings
 
                     Percentage = true
                 },
+                cooldownType = OperationType.Subtractive,
                 durationCurve = new UtilityCurve()
                 {
                     Curve = new SimpleCurve(new List<CurvePoint>()
@@ -114,6 +120,7 @@ namespace Mastery.Ability.Settings
 
                     Percentage = true
                 },
+                durationType = OperationType.Additive,
 
                 psyfocusCurve = new UtilityCurve()
                 {
@@ -126,6 +133,7 @@ namespace Mastery.Ability.Settings
 
                     Percentage = true
                 },
+                psyfocusType = OperationType.Subtractive,
                 entropyCurve = new UtilityCurve()
                 {
                     Curve = new SimpleCurve(new List<CurvePoint>()
@@ -136,20 +144,23 @@ namespace Mastery.Ability.Settings
                     }),
 
                     Percentage = true
-                }
+                },
+                entropyType = OperationType.Subtractive
             };
 
             ActionBase = new Level_Action_Extension()
             {
                 LevelKey = "AbilityMastery",
-                ExpGainCurve = new UtilityCurve()
+
+                expGainCurve = new UtilityCurve()
                 {
                     Curve = new SimpleCurve(new List<CurvePoint>()
                     {
                         new CurvePoint(0, 250),
                         new CurvePoint(20, 250)
                     })
-                }
+                },
+                expGainType = OperationType.Additive
             };
         }
 
@@ -225,6 +236,8 @@ namespace Mastery.Ability.Settings
 
             options.CheckboxLabeled("Ability_Mastery_Settings".Translate(), ref Active, "Ability_Mastery_Description_Settings".Translate());
 
+            options.CheckboxLabeled("Ability_Mastery_Tab_Settings".Translate(), ref TabActive, "Ability_Mastery_Tab_Description_Settings".Translate());
+
             search = options.TextEntryLabeled("Ability_Mastery_Searchbar_Settings".Translate(), search);
 
             options.End();
@@ -232,7 +245,7 @@ namespace Mastery.Ability.Settings
             #region List View
 
             var outRect = new Rect(inRect.x, inRect.y + options.CurHeight, inRect.width, inRect.height - options.CurHeight); //outRect is where the entire ScrollView is.
-            var viewRect = new Rect(inRect.x, inRect.y, inRect.width - GUIExpanded.mediumUISpacing, 0); //inRect is where the contents of the ScrollView is.
+            var viewRect = new Rect(inRect.x, inRect.y, inRect.width - UIUtility.mediumUISpacing, 0); //inRect is where the contents of the ScrollView is.
 
             foreach (var isCollapsedKey in isCollapsed.Keys) //Calculate List Height.
             {
@@ -242,29 +255,39 @@ namespace Mastery.Ability.Settings
 
                     if (isCollapsed[isCollapsedKey] == false)
                     {
-                        viewRect.height += GUIExpanded.smallUISpacing;
+                        viewRect.height += UIUtility.smallUISpacing;
 
-                        viewRect.height += Text.CalcHeight("Ability_Mastery_IsIgnored_Settings".Translate(), options.ColumnWidth);
+                        if (isCollapsedKey != baseExtensionName)
+                        {
+                            viewRect.height += Text.CalcHeight("Ability_Mastery_IsIgnored_Settings".Translate(), options.ColumnWidth);
+                        }
 
-                        viewRect.height += (UtilityCurve.UIHeight + GUIExpanded.smallUISpacing) * 9;
+                        viewRect.height += (UtilityCurve.UIHeight + UIUtility.smallUISpacing) * 9;
 
                         viewRect.height += Text.CalcHeight("Ability_Mastery_TitleCurve_Settings".Translate(), options.ColumnWidth);
                         viewRect.height += Text.CalcHeight("Ability_Mastery_ExpCurve_Settings".Translate(), options.ColumnWidth);
 
                         viewRect.height += Text.CalcHeight("Ability_Mastery_RangeCurve_Settings".Translate(), options.ColumnWidth);
+                        viewRect.height += Text.CalcHeight("Ability_Mastery_RangeType_Settings".Translate(), options.ColumnWidth);
                         viewRect.height += Text.CalcHeight("Ability_Mastery_RadiusCurve_Settings".Translate(), options.ColumnWidth);
+                        viewRect.height += Text.CalcHeight("Ability_Mastery_RadiusType_Settings".Translate(), options.ColumnWidth);
 
                         viewRect.height += Text.CalcHeight("Ability_Mastery_CastTimeCurve_Settings".Translate(), options.ColumnWidth);
+                        viewRect.height += Text.CalcHeight("Ability_Mastery_CastTimeType_Settings".Translate(), options.ColumnWidth);
                         viewRect.height += Text.CalcHeight("Ability_Mastery_CooldownCurve_Settings".Translate(), options.ColumnWidth);
+                        viewRect.height += Text.CalcHeight("Ability_Mastery_CooldownType_Settings".Translate(), options.ColumnWidth);
                         viewRect.height += Text.CalcHeight("Ability_Mastery_DurationCurve_Settings".Translate(), options.ColumnWidth);
+                        viewRect.height += Text.CalcHeight("Ability_Mastery_DurationType_Settings".Translate(), options.ColumnWidth);
 
                         viewRect.height += Text.CalcHeight("Ability_Mastery_PsyfocusCurve_Settings".Translate(), options.ColumnWidth);
+                        viewRect.height += Text.CalcHeight("Ability_Mastery_PsyfocusType_Settings".Translate(), options.ColumnWidth);
                         viewRect.height += Text.CalcHeight("Ability_Mastery_EntropyCurve_Settings".Translate(), options.ColumnWidth);
+                        viewRect.height += Text.CalcHeight("Ability_Mastery_EntropyType_Settings".Translate(), options.ColumnWidth);
                     }
 
                     if (isCollapsedKey != baseExtensionName)
                     {
-                        viewRect.height += GUIExpanded.mediumUISpacing + Text.CalcHeight("Ability_Mastery_Override_Settings".Translate(), options.ColumnWidth) + GUIExpanded.smallUISpacing;
+                        viewRect.height += UIUtility.mediumUISpacing + Text.CalcHeight("Ability_Mastery_Override_Settings".Translate(), options.ColumnWidth) + UIUtility.smallUISpacing;
                     }
                 }
             }
@@ -293,22 +316,22 @@ namespace Mastery.Ability.Settings
             #endregion
         }
 
-        public void MasteryItem(Rect viewRect, Listing_Standard options, string key)
+        public void MasteryItem(Rect viewRect, Listing_Standard standard, string key)
         {
             if (key != baseExtensionName)
-                options.GapLine(GUIExpanded.mediumUISpacing);
+                standard.GapLine(UIUtility.mediumUISpacing);
 
             bool foldoutIsCollapsed = isCollapsed[key];
-            GUIExpanded.Foldout(options, cachedNames[key], ref foldoutIsCollapsed);
+            UIUtility.Foldout(standard, cachedNames[key], ref foldoutIsCollapsed);
             isCollapsed[key] = foldoutIsCollapsed;
 
-            options.verticalSpacing = GUIExpanded.smallUISpacing;
+            standard.verticalSpacing = UIUtility.smallUISpacing;
 
             if (key != baseExtensionName)
             {
                 bool previousOverride = Configs[key].Override;
 
-                options.CheckboxLabeled("Ability_Mastery_Override_Settings".Translate(), ref Configs[key].Override);
+                standard.CheckboxLabeled("Ability_Mastery_Override_Settings".Translate(), ref Configs[key].Override);
 
                 if (Configs[key].Override == true && previousOverride != true)
                 {
@@ -325,20 +348,84 @@ namespace Mastery.Ability.Settings
 
                 var active = (key == baseExtensionName ? false : Configs[key].Override);
 
-                options.CheckboxLabeled("Ability_Mastery_IsIgnored_Settings".Translate(), ref masteryConfig.isIgnored);
+                if (key != baseExtensionName)
+                {
+                    standard.CheckboxLabeled("Ability_Mastery_IsIgnored_Settings".Translate(), ref masteryConfig.isIgnored);
+                }
 
-                masteryConfig.TitleCurve.Editor(options, "Ability_Mastery_TitleCurve_Settings".Translate(), active: active);
-                masteryConfig.ExpCurve.Editor(options, "Ability_Mastery_ExpCurve_Settings".Translate(), active: active);
+                var options = new List<string>
+                {
+                    "Mastery_Core_Additive".Translate(),
+                    "Mastery_Core_Subtractive".Translate(),
+                    "Mastery_Core_Multiplicative".Translate(),
+                    "Mastery_Core_Divisive".Translate()
+                };
 
-                masteryConfig.rangeCurve.Editor(options, "Ability_Mastery_RangeCurve_Settings".Translate(), active: active);
-                masteryConfig.radiusCurve.Editor(options, "Ability_Mastery_RadiusCurve_Settings".Translate(), active: active);
+                masteryConfig.TitleCurve.Editor(standard, "Ability_Mastery_TitleCurve_Settings".Translate(), active: active);
+                masteryConfig.ExpCurve.Editor(standard, "Ability_Mastery_ExpCurve_Settings".Translate(), active: active);
 
-                masteryConfig.castTimeCurve.Editor(options, "Ability_Mastery_CastTimeCurve_Settings".Translate(), active: active);
-                masteryConfig.cooldownCurve.Editor(options, "Ability_Mastery_CooldownCurve_Settings".Translate(), active: active);
-                masteryConfig.durationCurve.Editor(options, "Ability_Mastery_DurationCurve_Settings".Translate(), active: active);
+                masteryConfig.rangeCurve.Editor(standard, "Ability_Mastery_RangeCurve_Settings".Translate(), active: active);
+                UIUtility.Dropdown(standard, "Ability_Mastery_RangeType_Settings".Translate(), (int)masteryConfig.rangeType, options, (int selected) =>
+                {
+                    if (active == true)
+                    {
+                        masteryConfig.rangeType = (OperationType)selected;
+                    }
+                });
 
-                masteryConfig.psyfocusCurve.Editor(options, "Ability_Mastery_PsyfocusCurve_Settings".Translate(), active: active);
-                masteryConfig.entropyCurve.Editor(options, "Ability_Mastery_EntropyCurve_Settings".Translate(), active: active);
+                masteryConfig.radiusCurve.Editor(standard, "Ability_Mastery_RadiusCurve_Settings".Translate(), active: active);
+                UIUtility.Dropdown(standard, "Ability_Mastery_RadiusType_Settings".Translate(), (int)masteryConfig.radiusType, options, (int selected) =>
+                {
+                    if (active == true)
+                    {
+                        masteryConfig.radiusType = (OperationType)selected;
+                    }
+                });
+
+                masteryConfig.castTimeCurve.Editor(standard, "Ability_Mastery_CastTimeCurve_Settings".Translate(), active: active);
+                UIUtility.Dropdown(standard, "Ability_Mastery_CastTimeType_Settings".Translate(), (int)masteryConfig.castTimeType, options, (int selected) =>
+                {
+                    if (active == true)
+                    {
+                        masteryConfig.castTimeType = (OperationType)selected;
+                    }
+                });
+
+                masteryConfig.cooldownCurve.Editor(standard, "Ability_Mastery_CooldownCurve_Settings".Translate(), active: active);
+                UIUtility.Dropdown(standard, "Ability_Mastery_CooldownType_Settings".Translate(), (int)masteryConfig.cooldownType, options, (int selected) =>
+                {
+                    if (active == true)
+                    {
+                        masteryConfig.cooldownType = (OperationType)selected;
+                    }
+                });
+
+                masteryConfig.durationCurve.Editor(standard, "Ability_Mastery_DurationCurve_Settings".Translate(), active: active);
+                UIUtility.Dropdown(standard, "Ability_Mastery_DurationType_Settings".Translate(), (int)masteryConfig.durationType, options, (int selected) =>
+                {
+                    if (active == true)
+                    {
+                        masteryConfig.durationType = (OperationType)selected;
+                    }
+                });
+
+                masteryConfig.psyfocusCurve.Editor(standard, "Ability_Mastery_PsyfocusCurve_Settings".Translate(), active: active);
+                UIUtility.Dropdown(standard, "Ability_Mastery_PsyfocusType_Settings".Translate(), (int)masteryConfig.psyfocusType, options, (int selected) =>
+                {
+                    if (active == true)
+                    {
+                        masteryConfig.psyfocusType = (OperationType)selected;
+                    }
+                });
+
+                masteryConfig.entropyCurve.Editor(standard, "Ability_Mastery_EntropyCurve_Settings".Translate(), active: active);
+                UIUtility.Dropdown(standard, "Ability_Mastery_EntropyType_Settings".Translate(), (int)masteryConfig.entropyType, options, (int selected) =>
+                {
+                    if (active == true)
+                    {
+                        masteryConfig.entropyType = (OperationType)selected;
+                    }
+                });
             }
         }
 

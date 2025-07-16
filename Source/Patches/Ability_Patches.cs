@@ -9,10 +9,11 @@ using HarmonyLib;
 using Mastery.Core.Data.Level_Framework.Comps;
 
 using Mastery.Ability.Data;
+using Mastery.Ability.Settings;
+
+using Mastery.Ability.Patches.Vanilla;
 using Mastery.Ability.Patches.Mods.VFE;
 using Mastery.Ability.Patches.Mods.VPE;
-using Mastery.Ability.Patches.Vanilla;
-using Mastery.Ability.Settings;
 
 namespace Mastery.Ability.Patches
 {
@@ -20,15 +21,15 @@ namespace Mastery.Ability.Patches
     {
         public static void Patch()
         {
-            var harmony = Mod_Mastery_Ability.harmony;
+            var harmony = Mod_Ability_Mastery.harmony;
 
             var defs = DefDatabase<AbilityDef>.AllDefsListForReading; //Get all Abilities.
 
-            Mod_Mastery_Ability.settings.Data.Initilize();
+            Mod_Ability_Mastery.settings.Data.Initilize();
 
-            foreach (var def in defs) //Adds Ability Configs to Proficiency.
+            foreach (var def in defs) //Adds Ability Configs to Mastery.
             {
-                AbilityStatsManager.Add(def);
+                AbilityCacheManager.Add(def);
 
                 Abilities_Settings.Instance.AddConfig(def); //Add Ability.
             }
@@ -72,17 +73,17 @@ namespace Mastery.Ability.Patches
                     harmony.Patch(GenTypes.GetTypeInAnyAssembly("VEF.Abilities.CompAbilities").GetMethod("GiveAbility"), postfix: new HarmonyMethod(typeof(VFE_Ability_Gain), nameof(VFE_Ability_Gain.Postfix))); //Adds Abilities to Mastery Comp.
 #endif
 
-                    harmony.Patch(AbilityType.GetMethod("GetDescriptionForPawn"), postfix: new HarmonyMethod(typeof(VFE_Ability_Description), nameof(VFE_Ability_Description.Postfix))); //Gives Proficiency Level and Exp of Ability.
+                    harmony.Patch(AbilityType.GetMethod("GetDescriptionForPawn"), postfix: new HarmonyMethod(typeof(VFE_Ability_Description), nameof(VFE_Ability_Description.Postfix))); //Gives Mastery Level and Exp of Ability.
 
-                    harmony.Patch(AbilityType.Method("GetRangeForPawn"), postfix: new HarmonyMethod(typeof(VFE_Ability_Range), nameof(VFE_Ability_Range.Postfix))); //Sends the Updated Range of a Ability using Proficiency.
+                    harmony.Patch(AbilityType.Method("GetRangeForPawn"), postfix: new HarmonyMethod(typeof(VFE_Ability_Range), nameof(VFE_Ability_Range.Postfix))); //Sends the Updated Range of a Ability using Mastery.
 
-                    harmony.Patch(AbilityType.Method("GetRadiusForPawn"), postfix: new HarmonyMethod(typeof(VFE_Ability_Radius), nameof(VFE_Ability_Radius.Postfix))); //Sends the Updated Radius of a Ability using Proficiency.
+                    harmony.Patch(AbilityType.Method("GetRadiusForPawn"), postfix: new HarmonyMethod(typeof(VFE_Ability_Radius), nameof(VFE_Ability_Radius.Postfix))); //Sends the Updated Radius of a Ability using Mastery.
 
-                    harmony.Patch(AbilityType.Method("GetCastTimeForPawn"), postfix: new HarmonyMethod(typeof(VFE_Ability_CastTime), nameof(VFE_Ability_CastTime.Postfix))); //Sends the Updated CastTime of a Ability using Proficiency.
+                    harmony.Patch(AbilityType.Method("GetCastTimeForPawn"), postfix: new HarmonyMethod(typeof(VFE_Ability_CastTime), nameof(VFE_Ability_CastTime.Postfix))); //Sends the Updated CastTime of a Ability using Mastery.
 
-                    harmony.Patch(AbilityType.Method("GetCooldownForPawn"), postfix: new HarmonyMethod(typeof(VFE_Ability_Cooldown), nameof(VFE_Ability_Cooldown.Postfix))); //Sends the Updated Cooldown of a Ability using Proficiency.
+                    harmony.Patch(AbilityType.Method("GetCooldownForPawn"), postfix: new HarmonyMethod(typeof(VFE_Ability_Cooldown), nameof(VFE_Ability_Cooldown.Postfix))); //Sends the Updated Cooldown of a Ability using Mastery.
 
-                    harmony.Patch(AbilityType.Method("GetDurationForPawn"), postfix: new HarmonyMethod(typeof(VFE_Ability_Duration), nameof(VFE_Ability_Duration.Postfix))); //Sends the Updated Duration of a Ability using Proficiency.
+                    harmony.Patch(AbilityType.Method("GetDurationForPawn"), postfix: new HarmonyMethod(typeof(VFE_Ability_Duration), nameof(VFE_Ability_Duration.Postfix))); //Sends the Updated Duration of a Ability using Mastery.
 
                     harmony.Patch(AbilityType.Method("PostCast"), postfix: new HarmonyMethod(typeof(VFE_Ability_PostCast), nameof(VFE_Ability_PostCast.Postfix))); //Sends Level Action Extensions to Level Comp Manager each time the Ability is Used.
                 }
@@ -104,9 +105,9 @@ namespace Mastery.Ability.Patches
 
                     var PsycastType = GenTypes.GetTypeInAnyAssembly("VanillaPsycastsExpanded.AbilityExtension_Psycast");
 
-                    harmony.Patch(PsycastType.Method("GetPsyfocusUsedByPawn"), postfix: new HarmonyMethod(typeof(VPE_Ability_Psyfocus), nameof(VPE_Ability_Psyfocus.Postfix))); //Sends the Updated Psyfocus of a Ability using Proficiency.
+                    harmony.Patch(PsycastType.Method("GetPsyfocusUsedByPawn"), postfix: new HarmonyMethod(typeof(VPE_Ability_Psyfocus), nameof(VPE_Ability_Psyfocus.Postfix))); //Sends the Updated Psyfocus of a Ability using Mastery.
 
-                    harmony.Patch(PsycastType.Method("GetEntropyUsedByPawn"), postfix: new HarmonyMethod(typeof(VPE_Ability_Entropy), nameof(VPE_Ability_Entropy.Postfix))); //Sends the Updated Entropy of a Ability using Proficiency.
+                    harmony.Patch(PsycastType.Method("GetEntropyUsedByPawn"), postfix: new HarmonyMethod(typeof(VPE_Ability_Entropy), nameof(VPE_Ability_Entropy.Postfix))); //Sends the Updated Entropy of a Ability using Mastery.
 
                     harmony.Patch(AbilityType.Method("PostCast"), postfix: new HarmonyMethod(typeof(VPE_Ability_PostCast), nameof(VPE_Ability_PostCast.Postfix))); //Gives Psycast Exp each time the Ability is Used.
                 }
@@ -123,8 +124,7 @@ namespace Mastery.Ability.Patches
             {
                 if (actionType == "Ability" && __result.Contains(Abilities_Settings.Instance.LevelKey) == false) //Does it already have a ActionExtension?
                 {
-                    Ability_Mastery_Comp comp = null;
-                    if (Abilities_Settings.Instance.ActiveOnThing(__instance.parent, out comp) == true) //Is Mastery enabled?
+                    if (Abilities_Settings.Instance.ActiveOnThing(__instance.parent, out Ability_Mastery_Comp comp) == true) //Is Mastery enabled?
                     {
                         comp.ActionEvent(def, Abilities_Settings.Instance.ActionBase, states);
                     }

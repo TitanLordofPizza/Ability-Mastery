@@ -11,7 +11,7 @@ namespace Mastery.Ability.Patches.Mods.VPE
             if (Abilities_Settings.PsycastExp == true) //Is Psycast Exp enabled?
             {
 #if v1_5
-            var instance = __instance as VFECore.Abilities.Ability;
+                var instance = __instance as VFECore.Abilities.Ability;
 #else
                 var instance = __instance as VEF.Abilities.Ability;
 #endif
@@ -21,9 +21,9 @@ namespace Mastery.Ability.Patches.Mods.VPE
                 var hediff = instance.pawn.health.hediffSet.GetFirstHediff<VanillaPsycastsExpanded.Hediff_PsycastAbilities>(); //Get Psycast Hediff.
 
                 var level = hediff.level + 1;
-                var evaluation = action.ExpGainCurve.Evaluate(level);
+                var evaluation = action.expGainCurve.Evaluate(level);
 
-                hediff.GainExperience(action.ExpGainCurve.Percentage ? VanillaPsycastsExpanded.Hediff_PsycastAbilities.ExperienceRequiredForLevel(hediff.level + 1) * evaluation : evaluation); //Add EXP.
+                hediff.GainExperience(evaluation); //Add EXP.
             }
         }
     }
