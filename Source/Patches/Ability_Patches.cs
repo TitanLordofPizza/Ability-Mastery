@@ -7,6 +7,7 @@ using Verse;
 using HarmonyLib;
 
 using Mastery.Core.Data.Level_Framework.Comps;
+using Mastery.Core.Data.Level_Framework.Extensions;
 
 using Mastery.Ability.Data;
 using Mastery.Ability.Settings;
@@ -40,17 +41,18 @@ namespace Mastery.Ability.Patches
 
                 harmony.Patch(typeof(Level_Comp_Manager).Method(nameof(Level_Comp_Manager.ActionEvent)), postfix: new HarmonyMethod(typeof(Comp_Manager_ActionEvent_Patch), nameof(Comp_Manager_ActionEvent_Patch.Postfix)));
 
-                harmony.Patch(typeof(Pawn_AbilityTracker).Method(nameof(Pawn_AbilityTracker.GainAbility)), postfix: new HarmonyMethod(typeof(Ability_Gain), nameof(Ability_Gain.Postfix)));
-
-                harmony.Patch(typeof(RimWorld.Ability).Method(nameof(RimWorld.Ability.ExposeData)), postfix: new HarmonyMethod(typeof(Ability_ExposeData), nameof(Ability_ExposeData.Postfix)));
+                harmony.Patch(typeof(RimWorld.Ability).Method(nameof(RimWorld.Ability.Initialize)), postfix: new HarmonyMethod(typeof(Ability_Initialize), nameof(Ability_Initialize.Postfix)));
 
                 harmony.Patch(typeof(Ability_Mastery_Comp).Method(nameof(Ability_Mastery_Comp.GainExperience)), postfix: new HarmonyMethod(typeof(Ability_ExpGain), nameof(Ability_ExpGain.Postfix)));
 
                 harmony.Patch(typeof(AbilityDef).Method(nameof(AbilityDef.GetTooltip)), postfix: new HarmonyMethod(typeof(Ability_Description), nameof(Ability_Description.Postfix)));
 
-                harmony.Patch(typeof(RimWorld.Ability).Method(nameof(RimWorld.Ability.Activate), new System.Type[] { typeof(LocalTargetInfo), typeof(LocalTargetInfo) }), postfix: new HarmonyMethod(typeof(Ability_ActivateLocal), nameof(Ability_ActivateLocal.Postfix)));
+                if (Action_Manager.AddAction("Ability", "Activate") == false)  // Does This ActionPoint Already Exist?
+                {
+                    harmony.Patch(typeof(RimWorld.Ability).Method(nameof(RimWorld.Ability.Activate), new System.Type[] { typeof(LocalTargetInfo), typeof(LocalTargetInfo) }), postfix: new HarmonyMethod(typeof(Ability_ActivateLocal), nameof(Ability_ActivateLocal.Postfix)));
 
-                harmony.Patch(typeof(RimWorld.Ability).Method(nameof(RimWorld.Ability.Activate), new System.Type[] { typeof(GlobalTargetInfo) }), postfix: new HarmonyMethod(typeof(Ability_ActivateGlobal), nameof(Ability_ActivateGlobal.Postfix)));
+                    harmony.Patch(typeof(RimWorld.Ability).Method(nameof(RimWorld.Ability.Activate), new System.Type[] { typeof(GlobalTargetInfo) }), postfix: new HarmonyMethod(typeof(Ability_ActivateGlobal), nameof(Ability_ActivateGlobal.Postfix)));
+                }
             }
             catch (System.Exception ex)
             {
@@ -61,7 +63,7 @@ namespace Mastery.Ability.Patches
             {
                 if (LoadedModManager.RunningModsListForReading.Any(x => x.Name == "Vanilla Expanded Framework"))
                 {
-                    VFE_Defs_Patch.LoadDefs(); //Adds Ability Configs to Proficiency.
+                    VFE_Defs_Patch.LoadDefs(); //Adds Ability Configs to Mastery.
 
 #if v1_5
                     var AbilityType = GenTypes.GetTypeInAnyAssembly("VFECore.Abilities.Ability");
@@ -85,7 +87,10 @@ namespace Mastery.Ability.Patches
 
                     harmony.Patch(AbilityType.Method("GetDurationForPawn"), postfix: new HarmonyMethod(typeof(VFE_Ability_Duration), nameof(VFE_Ability_Duration.Postfix))); //Sends the Updated Duration of a Ability using Mastery.
 
-                    harmony.Patch(AbilityType.Method("PostCast"), postfix: new HarmonyMethod(typeof(VFE_Ability_PostCast), nameof(VFE_Ability_PostCast.Postfix))); //Sends Level Action Extensions to Level Comp Manager each time the Ability is Used.
+                    if (Action_Manager.AddAction("Ability", "PostCast") == false)  // Does This ActionPoint Already Exist?
+                    {
+                        harmony.Patch(AbilityType.Method("PostCast"), postfix: new HarmonyMethod(typeof(VFE_Ability_PostCast), nameof(VFE_Ability_PostCast.Postfix))); //Sends Level Action Extensions to Level Comp Manager each time the Ability is Used.
+                    }
                 }
             }
             catch (System.Exception ex)

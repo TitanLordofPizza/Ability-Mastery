@@ -13,32 +13,7 @@ using Mastery.Ability.Settings;
 
 namespace Mastery.Ability.Patches.Vanilla
 {
-    public static class Ability_Gain
-    {
-        public static void Postfix(Pawn_AbilityTracker __instance, AbilityDef def) //Adding Ability.
-        {
-            if (__instance.pawn.HasComp<Ability_Mastery_Comp>())
-            {
-                var comp = __instance.pawn.GetComp<Ability_Mastery_Comp>();
-
-                comp.GetOrAdd(def.defName); //Adding Ability.
-
-                if (Abilities_Settings.Instance.Active) //Is Mastery enabled?
-                {
-                    if (Abilities_Settings.Instance.ActiveConfig(def.defName) == true) //Is This Not Ignored?
-                    {
-                        var ability = __instance.GetAbility(def);
-
-                        ability.def = ClassUtility.CopyClass(ability.def);
-
-                        AbilityCacheManager.AllocateStats(comp, ability.def);
-                    }
-                }
-            }
-        }
-    }
-
-    public static class Ability_ExposeData
+    public static class Ability_Initialize
     {
         public static void Postfix(RimWorld.Ability __instance)
         {

@@ -10,7 +10,7 @@ namespace Mastery.Ability.Data
 {
     public class Ability_Mastery_Comp : Level_Comp
     {
-        public override string LevelKey => "AbilityMastery";
+        public override string LevelKey => "Ability_Mastery";
 
         private readonly Ability_Tab _tab = new Ability_Tab();
 

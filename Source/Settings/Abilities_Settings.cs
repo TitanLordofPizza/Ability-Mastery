@@ -150,7 +150,7 @@ namespace Mastery.Ability.Settings
 
             ActionBase = new Level_Action_Extension()
             {
-                LevelKey = "AbilityMastery",
+                LevelKey = "Ability_Mastery",
 
                 expGainCurve = new UtilityCurve()
                 {
@@ -198,7 +198,7 @@ namespace Mastery.Ability.Settings
 
         #region Extension Settings
 
-        public override string LevelKey => "AbilityMastery";
+        public override string LevelKey => "Ability_Mastery";
 
         private const string baseExtensionName = "masteryBase";
 
@@ -298,14 +298,14 @@ namespace Mastery.Ability.Settings
 
             if (baseExtensionName.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                MasteryItem(viewRect, options, baseExtensionName);
+                MasteryItem(options, baseExtensionName);
             }
 
             foreach (var key in Configs.Keys) //Create List.
             {
                 if (isCollapsed.ContainsKey(key) == true && cachedNames[key].IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    MasteryItem(viewRect, options, key);
+                    MasteryItem(options, key);
                 }
             }
 
@@ -316,10 +316,12 @@ namespace Mastery.Ability.Settings
             #endregion
         }
 
-        public void MasteryItem(Rect viewRect, Listing_Standard standard, string key)
+        public void MasteryItem(Listing_Standard standard, string key)
         {
             if (key != baseExtensionName)
+            {
                 standard.GapLine(UIUtility.mediumUISpacing);
+            }
 
             bool foldoutIsCollapsed = isCollapsed[key];
             UIUtility.Foldout(standard, cachedNames[key], ref foldoutIsCollapsed);
@@ -346,7 +348,7 @@ namespace Mastery.Ability.Settings
             {
                 var masteryConfig = (key == baseExtensionName ? ExtensionBase : GetConfig(key));
 
-                var active = (key == baseExtensionName ? false : Configs[key].Override);
+                var active = key != baseExtensionName && Configs[key].Override;
 
                 if (key != baseExtensionName)
                 {
@@ -365,7 +367,7 @@ namespace Mastery.Ability.Settings
                 masteryConfig.ExpCurve.Editor(standard, "Ability_Mastery_ExpCurve_Settings".Translate(), active: active);
 
                 masteryConfig.rangeCurve.Editor(standard, "Ability_Mastery_RangeCurve_Settings".Translate(), active: active);
-                UIUtility.Dropdown(standard, "Ability_Mastery_RangeType_Settings".Translate(), (int)masteryConfig.rangeType, options, (int selected) =>
+                UIUtility.Dropdown(standard, "Ability_Mastery_RangeType_Settings".Translate(), (int)masteryConfig.rangeType, options, selected =>
                 {
                     if (active == true)
                     {
@@ -374,7 +376,7 @@ namespace Mastery.Ability.Settings
                 });
 
                 masteryConfig.radiusCurve.Editor(standard, "Ability_Mastery_RadiusCurve_Settings".Translate(), active: active);
-                UIUtility.Dropdown(standard, "Ability_Mastery_RadiusType_Settings".Translate(), (int)masteryConfig.radiusType, options, (int selected) =>
+                UIUtility.Dropdown(standard, "Ability_Mastery_RadiusType_Settings".Translate(), (int)masteryConfig.radiusType, options, selected =>
                 {
                     if (active == true)
                     {
@@ -383,7 +385,7 @@ namespace Mastery.Ability.Settings
                 });
 
                 masteryConfig.castTimeCurve.Editor(standard, "Ability_Mastery_CastTimeCurve_Settings".Translate(), active: active);
-                UIUtility.Dropdown(standard, "Ability_Mastery_CastTimeType_Settings".Translate(), (int)masteryConfig.castTimeType, options, (int selected) =>
+                UIUtility.Dropdown(standard, "Ability_Mastery_CastTimeType_Settings".Translate(), (int)masteryConfig.castTimeType, options, selected =>
                 {
                     if (active == true)
                     {
@@ -392,7 +394,7 @@ namespace Mastery.Ability.Settings
                 });
 
                 masteryConfig.cooldownCurve.Editor(standard, "Ability_Mastery_CooldownCurve_Settings".Translate(), active: active);
-                UIUtility.Dropdown(standard, "Ability_Mastery_CooldownType_Settings".Translate(), (int)masteryConfig.cooldownType, options, (int selected) =>
+                UIUtility.Dropdown(standard, "Ability_Mastery_CooldownType_Settings".Translate(), (int)masteryConfig.cooldownType, options, selected =>
                 {
                     if (active == true)
                     {
@@ -401,7 +403,7 @@ namespace Mastery.Ability.Settings
                 });
 
                 masteryConfig.durationCurve.Editor(standard, "Ability_Mastery_DurationCurve_Settings".Translate(), active: active);
-                UIUtility.Dropdown(standard, "Ability_Mastery_DurationType_Settings".Translate(), (int)masteryConfig.durationType, options, (int selected) =>
+                UIUtility.Dropdown(standard, "Ability_Mastery_DurationType_Settings".Translate(), (int)masteryConfig.durationType, options, selected =>
                 {
                     if (active == true)
                     {
@@ -410,7 +412,7 @@ namespace Mastery.Ability.Settings
                 });
 
                 masteryConfig.psyfocusCurve.Editor(standard, "Ability_Mastery_PsyfocusCurve_Settings".Translate(), active: active);
-                UIUtility.Dropdown(standard, "Ability_Mastery_PsyfocusType_Settings".Translate(), (int)masteryConfig.psyfocusType, options, (int selected) =>
+                UIUtility.Dropdown(standard, "Ability_Mastery_PsyfocusType_Settings".Translate(), (int)masteryConfig.psyfocusType, options, selected =>
                 {
                     if (active == true)
                     {
@@ -419,7 +421,7 @@ namespace Mastery.Ability.Settings
                 });
 
                 masteryConfig.entropyCurve.Editor(standard, "Ability_Mastery_EntropyCurve_Settings".Translate(), active: active);
-                UIUtility.Dropdown(standard, "Ability_Mastery_EntropyType_Settings".Translate(), (int)masteryConfig.entropyType, options, (int selected) =>
+                UIUtility.Dropdown(standard, "Ability_Mastery_EntropyType_Settings".Translate(), (int)masteryConfig.entropyType, options, selected =>
                 {
                     if (active == true)
                     {
