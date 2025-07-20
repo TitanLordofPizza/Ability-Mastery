@@ -159,7 +159,6 @@ namespace Mastery.Ability.Patches.Vanilla
                 }
             }
         }
-
     }
 
     public class AbilityCache

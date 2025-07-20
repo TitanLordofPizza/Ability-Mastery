@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Collections.Generic;
+using System.Reflection;
 
 using RimWorld.Planet;
 using RimWorld;
@@ -13,6 +14,60 @@ using Mastery.Ability.Settings;
 
 namespace Mastery.Ability.Patches.Vanilla
 {
+    public static class AbilityTracker_GainAbility
+    {
+        public static bool Prefix(Pawn_AbilityTracker __instance, AbilityDef def)
+        {
+            RimWorld.Ability ability = __instance.abilities.FirstOrDefault((RimWorld.Ability x) => x.def.defName == def.defName);
+
+            if (__instance.abilities.Any((RimWorld.Ability x) => x.def.defName == def.defName) == false)
+            {
+                __instance.abilities.Add(AbilityUtility.MakeAbility(def, __instance.pawn));
+            }
+
+            __instance.Notify_TemporaryAbilitiesChanged();
+
+            return false; //Skipping Original Method.
+        }
+    }
+
+    public static class AbilityTracker_RemoveAbility
+    {
+        public static bool Prefix(Pawn_AbilityTracker __instance, AbilityDef def)
+        {
+            RimWorld.Ability ability = __instance.abilities.FirstOrDefault((RimWorld.Ability x) => x.def.defName == def.defName);
+
+            if (ability != null)
+            {
+                __instance.abilities.Remove(ability);
+            }
+
+            __instance.Notify_TemporaryAbilitiesChanged();
+
+            return false; //Skipping Original Method.
+        }
+    }
+
+    public static class AbilityTracker_GetAbility
+    {
+        public static void Postfix(Pawn_AbilityTracker __instance, ref RimWorld.Ability __result, AbilityDef def, bool includeTemporary = false)
+        {
+            if (__result == null)
+            {
+                List<RimWorld.Ability> list = (includeTemporary ? __instance.AllAbilitiesForReading : __instance.abilities);
+                for (int i = 0; i < list.Count; i++)
+                {
+                    if (list[i].def.defName == def.defName)
+                    {
+                        __result = list[i];
+
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
     public static class Ability_Initialize
     {
         public static void Postfix(RimWorld.Ability __instance)

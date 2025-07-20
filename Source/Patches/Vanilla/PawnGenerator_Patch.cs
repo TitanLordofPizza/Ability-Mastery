@@ -17,7 +17,7 @@ namespace Mastery.Ability.Patches.Vanilla
             }
             catch (System.Exception ex)
             {
-                Log.Error("Failed to Generate a Pawns Ability Mastery. " + ex);
+                Log.Error("Failed to Generate a Pawn's Ability Mastery. " + ex);
             }
         }
     }

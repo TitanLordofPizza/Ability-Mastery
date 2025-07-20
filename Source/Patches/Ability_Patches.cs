@@ -41,6 +41,11 @@ namespace Mastery.Ability.Patches
 
                 harmony.Patch(typeof(Level_Comp_Manager).Method(nameof(Level_Comp_Manager.ActionEvent)), postfix: new HarmonyMethod(typeof(Comp_Manager_ActionEvent_Patch), nameof(Comp_Manager_ActionEvent_Patch.Postfix)));
 
+                harmony.Patch(typeof(Pawn_AbilityTracker).Method(nameof(Pawn_AbilityTracker.GainAbility)), prefix: new HarmonyMethod(typeof(AbilityTracker_GainAbility), nameof(AbilityTracker_GainAbility.Prefix)));
+                harmony.Patch(typeof(Pawn_AbilityTracker).Method(nameof(Pawn_AbilityTracker.RemoveAbility)), prefix: new HarmonyMethod(typeof(AbilityTracker_RemoveAbility), nameof(AbilityTracker_RemoveAbility.Prefix)));
+
+                harmony.Patch(typeof(Pawn_AbilityTracker).Method(nameof(Pawn_AbilityTracker.GetAbility)), postfix: new HarmonyMethod(typeof(AbilityTracker_GetAbility), nameof(AbilityTracker_GetAbility.Postfix)));
+
                 harmony.Patch(typeof(RimWorld.Ability).Method(nameof(RimWorld.Ability.Initialize)), postfix: new HarmonyMethod(typeof(Ability_Initialize), nameof(Ability_Initialize.Postfix)));
 
                 harmony.Patch(typeof(Ability_Mastery_Comp).Method(nameof(Ability_Mastery_Comp.GainExperience)), postfix: new HarmonyMethod(typeof(Ability_ExpGain), nameof(Ability_ExpGain.Postfix)));
